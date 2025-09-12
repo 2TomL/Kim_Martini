@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Kim Martini - Backdrop</title>
+	<link rel="stylesheet" href="style.css">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+	<!-- Animated Background Only -->
+	<div class="container">
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+		<div class="col"></div>
+	</div>
+
+	<!-- Navigation -->
+	<nav class="navbar">
+		<div class="nav-container">
+			<div class="logo">
+				<img src="assets/logo_KM_nt.png" alt="kim Martini" class="navbar-logo">
+				<h1>kim Martini</h1>
+			</div>
+			
+			<!-- Live Mixer (Desktop Only) -->
+			<div class="live-mixer" id="live-mixer">
+				<div class="mixer-header">
+					<h3>Live Mixer</h3>
+					<button class="mixer-toggle collapsed" id="mixer-toggle" aria-label="Toggle mixer">▼</button>
+				</div>
+				<div class="mixer-content collapsed" id="mixer-content">
+					<div class="mixer-channel" data-channel="1">
+						<div class="channel-header">
+							<span class="channel-label">CH1</span>
+							<button class="play-btn" data-channel="1" aria-label="Play Channel 1">▶</button>
+						</div>
+						<div class="volume-control">
+							<div class="volume-dial" data-channel="1">
+								<div class="dial-track"></div>
+								<div class="dial-thumb"></div>
+								<div class="dial-dots">
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+								</div>
+							</div>
+							<span class="volume-value">0</span>
+						</div>
+					</div>
+					
+					<div class="mixer-channel" data-channel="2">
+						<div class="channel-header">
+							<span class="channel-label">CH2</span>
+							<button class="play-btn" data-channel="2" aria-label="Play Channel 2">▶</button>
+						</div>
+						<div class="volume-control">
+							<div class="volume-dial" data-channel="2">
+								<div class="dial-track"></div>
+								<div class="dial-thumb"></div>
+								<div class="dial-dots">
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+								</div>
+							</div>
+							<span class="volume-value">0</span>
+						</div>
+					</div>
+					
+					<div class="mixer-channel" data-channel="3">
+						<div class="channel-header">
+							<span class="channel-label">CH3</span>
+							<button class="play-btn" data-channel="3" aria-label="Play Channel 3">▶</button>
+						</div>
+						<div class="volume-control">
+							<div class="volume-dial" data-channel="3">
+								<div class="dial-track"></div>
+								<div class="dial-thumb"></div>
+								<div class="dial-dots">
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+								</div>
+							</div>
+							<span class="volume-value">0</span>
+						</div>
+					</div>
+					
+					<div class="mixer-master">
+						<div class="master-header">
+							<span class="master-label">MASTER</span>
+							<button class="master-play" id="master-play" aria-label="Play All">▶</button>
+						</div>
+						<div class="volume-control">
+							<div class="volume-dial master-dial">
+								<div class="dial-track"></div>
+								<div class="dial-thumb"></div>
+								<div class="dial-dots">
+									<div class="dot filled"></div>
+									<div class="dot filled"></div>
+									<div class="dot filled"></div>
+									<div class="dot filled"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+									<div class="dot"></div>
+								</div>
+							</div>
+							<span class="volume-value">50</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Hamburger Menu Button (Mobile) -->
+			<button class="hamburger-menu" id="hamburger-menu" aria-label="Toggle menu">
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
+			</button>
+			
+			<!-- Desktop Menu -->
+			<ul class="nav-menu" id="nav-menu">
+				<li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+				<li class="nav-item"><a href="#mixes" class="nav-link">Music</a></li>
+				<li class="nav-item"><a href="#events" class="nav-link">Events</a></li>
+				<li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+				<li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<!-- Mobile Menu Overlay -->
+	<div class="mobile-menu-overlay" id="mobile-menu-overlay">
+		<div class="mobile-menu">
+			<ul class="mobile-nav-menu">
+				<li class="mobile-nav-item"><a href="#home" class="mobile-nav-link">Home</a></li>
+				<li class="mobile-nav-item"><a href="#mixes" class="mobile-nav-link">Music</a></li>
+				<li class="mobile-nav-item"><a href="#events" class="mobile-nav-link">Events</a></li>
+				<li class="mobile-nav-item"><a href="#about" class="mobile-nav-link">About</a></li>
+				<li class="mobile-nav-item"><a href="#contact" class="mobile-nav-link">Contact</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<!-- Home Hero Section -->
+	<section id="home" class="hero">
+		<div class="hero-content">
+			<div class="hero-logo">
+				<img src="assets/logo_KM.png" alt="kim Martini Logo" class="logo-image">
+			</div>
+			<h1 class="hero-title">kim Martini</h1>
+			<p class="hero-subtitle">Electronic Music Producer & DJ</p>
+		</div>
+	</section>
+
+	<!-- Music Section -->
+	<section id="mixes" class="section">
+		<div class="section-container">
+			<h2 class="section-title">Music</h2>
+			<div id="mixes-container"></div>
+		</div>
+	</section>
+
+	<!-- Events Section -->
+	<section id="events" class="section">
+		<div class="section-container">
+			<h2 class="section-title">Events</h2>
+			<!-- Content will be added later -->
+		</div>
+	</section>
+
+	<!-- About Section -->
+	<section id="about" class="section">
+		<div class="section-container">
+			<h2 class="section-title">About</h2>
+			<!-- Content will be added later -->
+		</div>
+	</section>
+
+	<!-- Contact Section -->
+	<section id="contact" class="section">
+		<div class="section-container">
+			<h2 class="section-title">Contact</h2>
+			<!-- Content will be added later -->
+		</div>
+	</section>
+
+	<!-- Theme Toggle Button -->
+	<button class="theme-toggle" id="theme-toggle">DARK</button>
+    <script src="app.js"></script>
+    <script src="mixer.js"></script>
+    <script src="soundcloud.js"></script>
+</body>
+</html>
