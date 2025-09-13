@@ -1,15 +1,16 @@
-const themeToggle = document.getElementById('theme-toggle');
-		const body = document.body;
 
-		themeToggle.addEventListener('click', () => {
-			if (body.getAttribute('data-theme') === 'dark') {
-				body.removeAttribute('data-theme');
-				themeToggle.textContent = 'DARK';
-			} else {
-				body.setAttribute('data-theme', 'dark');
-				themeToggle.textContent = 'LIGHT';
-			}
-		});
+const themeToggle = document.getElementById('theme-toggle');
+const html = document.documentElement;
+
+themeToggle.addEventListener('click', () => {
+	if (html.getAttribute('data-theme') === 'dark') {
+		html.removeAttribute('data-theme');
+		themeToggle.textContent = 'DARK';
+	} else {
+		html.setAttribute('data-theme', 'dark');
+		themeToggle.textContent = 'LIGHT';
+	}
+});
 
 		// Mobile menu functionality
 		const hamburgerMenu = document.getElementById('hamburger-menu');
@@ -40,7 +41,6 @@ const themeToggle = document.getElementById('theme-toggle');
 	(function() {
 			const images = [
 				'assets/KimM1.png',
-				'assets/KimM3.jpg',
 				'assets/KimM4.jpg',
 				'assets/KimM5.jpg',
 				'assets/KimM6.jpg',
@@ -59,13 +59,19 @@ const themeToggle = document.getElementById('theme-toggle');
 		const overlay = document.getElementById('raster-overlay');
 		const side = 7;
 		const nCell = side * side;
-				// Maak grid cellen met sterke random animatievolgorde
+
+		// Toon eerste foto direct
+		img.src = images[0];
+				// Maak grid cellen met golf-diagonale animatievolgorde
 				overlay.innerHTML = '';
 				for (let i = 0; i < nCell; i++) {
 					const cell = document.createElement('div');
 					cell.className = 'raster-cell';
-					// Volledig willekeurige delay tussen 0 en 0.8s
-					cell.style.animationDelay = (Math.random() * 0.8).toFixed(3) + 's';
+					const x = i % side;
+					const y = Math.floor(i / side);
+					// Delay per diagonaal: golf van linksboven naar rechtsonder
+					const delay = ((x + y) * 0.09).toFixed(3);
+					cell.style.animationDelay = delay + 's';
 					overlay.appendChild(cell);
 				}
 		// Ensure overlay is last child so it sits above the image
@@ -103,5 +109,5 @@ const themeToggle = document.getElementById('theme-toggle');
 				}, 1200);
 			}
 		// Start slideshow: 4s foto, dan raster, dan wissel
-		setInterval(showNext, 4000);
+	setInterval(showNext, 4000);
 	})();

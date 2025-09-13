@@ -1,13 +1,14 @@
 
 @font-face {
-  font-family: 'KOMPAQ';
-  src: url('./font/KOMPAQ.ttf') format('truetype');
+  font-family: 'Montserrat Alternates';
+  src: url('./font/MontserratAlternates-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
+
 body, .section, .mix-title, .mix-meta, .cta-button, .mix-card, .mix-info, .section-title, .nav, .about-text, .slideshow, .soundcloud-player {
-  font-family: 'KOMPAQ', Arial, sans-serif !important;
+  font-family: 'Montserrat Alternates', Arial, sans-serif !important;
 }
 
 

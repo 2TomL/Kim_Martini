@@ -1,5 +1,226 @@
-/* .raster-cell empty ruleset removed */
+/* Dark mode contact icons */
+[data-theme="dark"] .contact-menu-list .menu-item img[alt="Soundcloud"] {
+  content: url('assets/icons/SCd.png');
+}
+[data-theme="dark"] .contact-menu-list .menu-item img[alt="Facebook"] {
+  content: url('assets/icons/FBb.png');
+}
+[data-theme="dark"] .contact-menu-list .menu-item img[alt="Instagram"] {
+  content: url('assets/icons/Instab.png');
+}
+[data-theme="dark"] .contact-menu-list .menu-item img[alt="Resident Advisor"] {
+  content: url('assets/icons/RAd.png');
+}
+[data-theme="dark"] .contact-menu-list .menu-item img[alt="Mail"] {
+  content: url('assets/icons/Maild.png');
+}
+/* Contact Kebab Menu Styles */
+.contact-kebab-menu {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin: 2rem auto 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.contact-kebab-menu .menu-toggler {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  opacity: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+.contact-kebab-menu label {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  background: rgba(var(--secondary-color-rgb), 0.15);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+.contact-kebab-menu label:before, .contact-kebab-menu label:after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  background: var(--secondary-color);
+  border-radius: 2px;
+  transition: transform 0.4s;
+}
+.contact-kebab-menu label:before { top: 18px; }
+.contact-kebab-menu label:after { top: 26px; }
+.contact-kebab-menu label {
+  box-shadow: 0 2px 12px rgba(var(--secondary-color-rgb), 0.13);
+}
+.contact-kebab-menu .menu-toggler:checked + label {
+  background: rgba(var(--secondary-color-rgb), 0.25);
+}
+.contact-kebab-menu .menu-toggler:checked + label:before {
+  transform: translateY(8px) rotate(45deg);
+}
+.contact-kebab-menu .menu-toggler:checked + label:after {
+  transform: translateY(-8px) rotate(-45deg);
+}
+.contact-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  z-index: 0;
+}
+.contact-menu-list .menu-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item {
+  opacity: 1;
+  pointer-events: auto;
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(1) {
+  transform: translate(-50%, -50%) rotate(-72deg) translateY(80px) scale(1);
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(2) {
+  transform: translate(-50%, -50%) rotate(-36deg) translateY(80px) scale(1);
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(3) {
+  transform: translate(-50%, -50%) rotate(0deg) translateY(80px) scale(1);
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(4) {
+  transform: translate(-50%, -50%) rotate(36deg) translateY(80px) scale(1);
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(5) {
+  transform: translate(-50%, -50%) rotate(72deg) translateY(80px) scale(1);
+}
+.contact-menu-list .menu-item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(var(--secondary-color-rgb), 0.13);
+  color: var(--secondary-color);
+  font-size: 1.6rem;
+  box-shadow: 0 2px 8px rgba(var(--secondary-color-rgb), 0.10);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+  pointer-events: none;
+  overflow: hidden;
+}
+.contact-menu-list .menu-item img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.12));
+  transition: filter 0.2s;
+}
+.contact-menu-list .menu-item a:hover img {
+  filter: drop-shadow(0 0 8px var(--secondary-color));
+}
+@media (max-width: 600px) {
+  .contact-menu-list .menu-item a {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+  .contact-menu-list .menu-item img {
+    width: 22px;
+    height: 22px;
+  }
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item a {
+  pointer-events: auto;
+}
+.contact-menu-list .menu-item a:hover {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  box-shadow: 0 0 0 6px rgba(var(--secondary-color-rgb), 0.18);
+  transform: scale(1.12);
+}
+.contact-menu-list .menu-item svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+  display: block;
+}
+@media (max-width: 600px) {
+  .contact-kebab-menu {
+    width: 44px;
+    height: 44px;
+  }
+  .contact-menu-list .menu-item a {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+  .contact-menu-list .menu-item svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+[data-theme="dark"] .contact-menu-list .menu-item a {
+  background: rgba(var(--secondary-color-rgb), 0.18);
+  color: var(--secondary-color);
+}
+[data-theme="dark"] .contact-menu-list .menu-item a:hover {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+}
+/* Custom Scrollbar kleur: light = #00ffff, dark = #1e40af */
+html::-webkit-scrollbar {
+  width: 12px;
+}
+html::-webkit-scrollbar-thumb {
+  background: #00ffff;
+  border-radius: 6px;
+}
+html::-webkit-scrollbar-track {
+  background: #111;
+}
+
+
+html[data-theme="dark"]::-webkit-scrollbar-thumb {
+  background: #511525;
+}
+html[data-theme="dark"]::-webkit-scrollbar-track {
+  background: #000;
+}
+
+/* Firefox */
+html {
+  scrollbar-color: #00ffff #111;
+}
+
+html[data-theme="dark"] {
+  scrollbar-color: #511525 #000;
+}
+.dark-mode .mixer-header h3,
+[data-theme="dark"] .mixer-header h3 {
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(var(--secondary-color-rgb), 0.7), 0 0 2px #000;
+}
+
+.raster-cell.active {
+  animation: rasterIn 1.2s forwards;
+}
 /* Donkere kleuren voor raster in dark mode */
 [data-theme="dark"] .raster-cell {
   background: linear-gradient(135deg,
@@ -1343,10 +1564,17 @@ body::after {
 
 .master-label {
   font-size: 0.65rem;
-  font-weight: bold;
-  color: var(--accent-color);
+  font-weight: 800;
+  color: var(--secondary-color);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.dark-mode .master-label,
+[data-theme="dark"] .master-label {
+  color: var(--secondary-color);
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(var(--secondary-color-rgb), 0.7), 0 0 2px #000;
 }
 
 .master-play {
@@ -1444,7 +1672,7 @@ body::after {
   width: 80px;
   height: 40px;
   color: var(--text-color);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat Alternates', Arial, sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -1740,9 +1968,7 @@ body::after {
   backdrop-filter: blur(0);
 }
 
-.raster-cell.active {
-  animation: rasterIn 1.2s forwards;
-}
+
 
 @keyframes rasterIn {
   0% { opacity: 0; backdrop-filter: blur(0); }
