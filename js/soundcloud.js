@@ -2,7 +2,7 @@ const mixesContainer = document.getElementById("mixes-container");
 
 async function loadSoundcloudTracks() {
   // SoundCloud RSS feed
-  const rssUrl = "https://feeds.soundcloud.com/users/soundcloud:users:92709842/sounds.rss";
+  const rssUrl = "https://feeds.soundcloud.com/users/soundcloud:users:1593052395/sounds.rss";
   try {
     // Gebruik een CORS proxy die alleen de XML doorgeeft
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;

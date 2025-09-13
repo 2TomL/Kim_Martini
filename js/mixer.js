@@ -6,14 +6,14 @@ class LiveMixer {
             2: { audio: null, volume: 0, isPlaying: false },
             3: { audio: null, volume: 0, isPlaying: false }
         };
-        this.masterVolume = 0.5;
+    this.masterVolume = 0.5;
         this.isCollapsed = true; // Start collapsed
         
-        // Sample audio URLs (placeholder - replace with actual samples)
+        // Sample audio URLs (eigen samples)
         this.sampleUrls = {
-            1: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3',
-            2: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3',
-            3: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3'
+            1: 'assets/mixer/Conga.wav', // High
+            2: 'assets/mixer/kick-claps.wav',  // Mid
+            3: 'assets/mixer/bassline.wav' // Low
         };
         
         this.init();
@@ -42,30 +42,18 @@ class LiveMixer {
         }
     }
     
-    async createSineWave(channel) {
+    async createSampleBuffer(channel) {
         // Ensure audio context is ready
         if (!this.audioContext) {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
-        
         if (this.audioContext.state === 'suspended') {
             await this.audioContext.resume();
         }
-        
-        const frequencies = { 1: 220, 2: 330, 3: 440 }; // Different frequencies for each channel
-        const frequency = frequencies[channel];
-        const duration = 2; // 2 second loop
-        const sampleRate = this.audioContext.sampleRate;
-        const frameCount = sampleRate * duration;
-        
-        const audioBuffer = this.audioContext.createBuffer(1, frameCount, sampleRate);
-        const channelData = audioBuffer.getChannelData(0);
-        
-        for (let i = 0; i < frameCount; i++) {
-            channelData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate) * 0.3;
-        }
-        
-        return audioBuffer;
+        const url = this.sampleUrls[channel];
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        return await this.audioContext.decodeAudioData(arrayBuffer);
     }
     
     setupEventListeners() {
@@ -92,7 +80,6 @@ class LiveMixer {
             if (playBtn) {
                 playBtn.addEventListener('click', () => this.toggleChannel(i));
             }
-            
             const dial = document.querySelector(`[data-channel="${i}"].volume-dial`);
             if (dial) {
                 this.setupDialControls(dial, i);
@@ -112,9 +99,9 @@ class LiveMixer {
     }
     
     setupDialControls(dial, channel) {
-        let isDragging = false;
-        let startAngle = 0;
-        let currentAngle = -135; // Start at minimum
+    let isDragging = false;
+    let startAngle = 0;
+    let currentAngle = -135; // Start at minimum (volume 0)
         
         const thumb = dial.querySelector('.dial-thumb');
         const valueDisplay = dial.parentElement.querySelector('.volume-value');
@@ -133,24 +120,24 @@ class LiveMixer {
         
         const updateDial = (angle) => {
             currentAngle = angle;
-            const volume = (angle + 135) / 270; // Convert -135 to 135 range to 0-1
+            // -135deg = 0, 135deg = 1
+            const volume = (angle + 135) / 270;
             this.channels[channel].volume = volume;
-            
             // Update visual elements
             thumb.style.transform = `translateX(-50%) rotate(${angle}deg)`;
             valueDisplay.textContent = Math.round(volume * 100);
-            
             // Update dots - reduce to 7 dots for compact design
             const activeDots = Math.floor(volume * 7);
             dots.forEach((dot, index) => {
                 dot.classList.toggle('filled', index < activeDots);
             });
-            
             // Update audio volume
             if (this.channels[channel].gainNode) {
                 this.channels[channel].gainNode.gain.value = volume * this.masterVolume;
             }
         };
+        // Zet de dial standaard helemaal links (0 volume)
+        updateDial(-135);
         
         dial.addEventListener('mousedown', (e) => {
             if (this.audioContext.state === 'suspended') {
@@ -305,38 +292,38 @@ class LiveMixer {
     
     async toggleChannel(channel) {
         const playBtn = document.querySelector(`[data-channel="${channel}"].play-btn`);
-        
+        // Accept syncTime and offset for perfect sync
+        let syncTime = null, offset = 0;
+        if (arguments.length > 1) syncTime = arguments[1];
+        if (arguments.length > 2) offset = arguments[2];
         // Ensure audio context is ready
         if (!this.audioContext) {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
-        
         if (this.audioContext.state === 'suspended') {
             await this.audioContext.resume();
         }
-        
         if (!this.channels[channel].source || !this.channels[channel].isPlaying) {
             // Create new source
             try {
-                const audioBuffer = await this.createSineWave(channel);
+                const audioBuffer = await this.createSampleBuffer(channel);
                 const source = this.audioContext.createBufferSource();
                 source.buffer = audioBuffer;
                 source.loop = true;
-                
                 const gainNode = this.audioContext.createGain();
                 gainNode.gain.value = this.channels[channel].volume * this.masterVolume;
-                
                 source.connect(gainNode);
                 gainNode.connect(this.audioContext.destination);
-                
                 this.channels[channel].source = source;
                 this.channels[channel].gainNode = gainNode;
-                
-                source.start();
+                if (syncTime !== null) {
+                    source.start(syncTime, offset);
+                } else {
+                    source.start();
+                }
                 this.channels[channel].isPlaying = true;
                 playBtn.classList.add('playing');
                 playBtn.textContent = '⏸';
-                
                 // Check if any channel is playing, then add .is-playing to body
                 if (Object.values(this.channels).some(ch => ch.isPlaying)) {
                     document.body.classList.add('is-playing');
@@ -354,12 +341,10 @@ class LiveMixer {
             this.channels[channel].isPlaying = false;
             playBtn.classList.remove('playing');
             playBtn.textContent = '▶';
-            
             // Check if no channel is playing, then remove .is-playing from body
             if (!Object.values(this.channels).some(ch => ch.isPlaying)) {
                 document.body.classList.remove('is-playing');
             }
-            
             // Clear source for next play
             this.channels[channel].source = null;
             this.channels[channel].gainNode = null;
@@ -381,10 +366,11 @@ class LiveMixer {
             masterPlay.textContent = '▶';
             document.body.classList.remove('is-playing');
         } else {
-            // Start all
+            // Start all in sync
+            const syncTime = this.audioContext.currentTime + 0.1; // schedule all to start together
             for (let i = 1; i <= 3; i++) {
                 if (!this.channels[i].isPlaying) {
-                    await this.toggleChannel(i);
+                    await this.toggleChannel(i, syncTime, 0);
                 }
             }
             masterPlay.classList.add('playing');
@@ -409,10 +395,17 @@ class LiveMixer {
     }
     
     updateUI() {
-        // Initialize UI state
+        // Initialize UI state: knoppen links (0 volume)
         for (let i = 1; i <= 3; i++) {
-            const valueDisplay = document.querySelector(`[data-channel="${i}"].volume-dial`).parentElement.querySelector('.volume-value');
-            valueDisplay.textContent = '0';
+            const dial = document.querySelector(`[data-channel="${i}"].volume-dial`);
+            if (dial) {
+                const thumb = dial.querySelector('.dial-thumb');
+                if (thumb) thumb.style.transform = 'translateX(-50%) rotate(-135deg)';
+                const valueDisplay = dial.parentElement.querySelector('.volume-value');
+                if (valueDisplay) valueDisplay.textContent = '0';
+                const dots = dial.querySelectorAll('.dot');
+                dots.forEach(dot => dot.classList.remove('filled'));
+            }
         }
     }
 }
