@@ -1,16 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
+	<link rel="icon" type="image/png" href="assets/KM_favicon.png">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Kim Martini - Backdrop</title>
+	<title>Kim Martini</title>
 	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="font.css">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 	<!-- Animated Background Only -->
-	<div class="container">
+		<div class="container">
 		<div class="col"></div>
 		<div class="col"></div>
 		<div class="col"></div>
@@ -41,8 +42,9 @@
 	<nav class="navbar">
 		<div class="nav-container">
 			<div class="logo">
-				<img src="assets/logo_KM_nt.png" alt="kim Martini" class="navbar-logo">
-				<h1>kim Martini</h1>
+				<img src="assets/logo_KM_nt.png" alt="kim Martini light" class="navbar-logo navbar-logo-light">
+				<img src="assets/logo_KM2.png" alt="kim Martini dark" class="navbar-logo navbar-logo-dark">
+				<h1>Kim Martini</h1>
 			</div>
 			
 			<!-- Live Mixer (Desktop Only) -->
@@ -54,7 +56,7 @@
 				<div class="mixer-content collapsed" id="mixer-content">
 					<div class="mixer-channel" data-channel="1">
 						<div class="channel-header">
-							<span class="channel-label">CH1</span>
+							<span class="channel-label">High</span>
 							<button class="play-btn" data-channel="1" aria-label="Play Channel 1">▶</button>
 						</div>
 						<div class="volume-control">
@@ -77,7 +79,7 @@
 					
 					<div class="mixer-channel" data-channel="2">
 						<div class="channel-header">
-							<span class="channel-label">CH2</span>
+							<span class="channel-label">Mid</span>
 							<button class="play-btn" data-channel="2" aria-label="Play Channel 2">▶</button>
 						</div>
 						<div class="volume-control">
@@ -100,7 +102,7 @@
 					
 					<div class="mixer-channel" data-channel="3">
 						<div class="channel-header">
-							<span class="channel-label">CH3</span>
+							<span class="channel-label">Low</span>
 							<button class="play-btn" data-channel="3" aria-label="Play Channel 3">▶</button>
 						</div>
 						<div class="volume-control">
@@ -181,9 +183,10 @@
 	<section id="home" class="hero">
 		<div class="hero-content">
 			<div class="hero-logo">
-				<img src="assets/logo_KM.png" alt="kim Martini Logo" class="logo-image">
+				<img src="assets/logo_KM_nt.png" alt="Kim Martini Logo light" class="logo-image logo-light">
+				<img src="assets/logo_KM2.png" alt="Kim Martini Logo dark" class="logo-image logo-dark">
 			</div>
-			<h1 class="hero-title">kim Martini</h1>
+			<h1 class="hero-title">Kim Martini</h1>
 			<p class="hero-subtitle">Electronic Music Producer & DJ</p>
 		</div>
 	</section>
@@ -206,9 +209,17 @@
 
 	<!-- About Section -->
 	<section id="about" class="section">
-		<div class="section-container">
-			<h2 class="section-title">About</h2>
-			<!-- Content will be added later -->
+		<div class="section-container about-flex">
+			<div class="about-text">
+				<h2 class="section-title">About</h2>
+				<p>
+					Kim Martini is een gepassioneerde elektronische muziekproducer en DJ met een unieke sound. Met een mix van energieke beats, melodieuze lijnen en een creatieve aanpak weet Kim elk publiek te verrassen. Haar liefde voor muziek en performance brengt mensen samen op de dansvloer en daarbuiten.
+				</p>
+			</div>
+				<div class="about-photo slideshow-container">
+  					<img id="about-slideshow" src="assets/KimM4.jpg" alt="Kim Martini">
+  				<div id="raster-overlay" class="raster-overlay"></div>
+			</div>
 		</div>
 	</section>
 
@@ -219,11 +230,9 @@
 			<!-- Content will be added later -->
 		</div>
 	</section>
-
-	<!-- Theme Toggle Button -->
 	<button class="theme-toggle" id="theme-toggle">DARK</button>
     <script src="app.js"></script>
-    <script src="mixer.js"></script>
-    <script src="soundcloud.js"></script>
+    <script src="js/mixer.js"></script>
+    <script src="js/soundcloud.js"></script>
 </body>
 </html>
