@@ -40,19 +40,24 @@ themeToggle.addEventListener('click', () => {
 		
 	(function() {
 			const images = [
+				'assets/KM_Logo3.png',
 				'assets/KimM1.png',
 				'assets/KimM4.jpg',
 				'assets/KimM5.jpg',
+				'assets/4.gif',
 				'assets/KimM6.jpg',
 				'assets/KimM7.jpg',
 				'assets/KimM8.jpg',
+				'assets/6.gif',
 				'assets/KimM9.jpeg',
 				'assets/KimM10.jpg',
 				'assets/KimM11.jpg',
 				'assets/KimM12.jpg',
+				'assets/7.gif',
 				'assets/KimM13.jpg',
 				'assets/KimM15.jpg',
-				'assets/KimMs2.jpg'
+				'assets/KimMs2.jpg',
+				'assets/11.gif'
 			];
 		let idx = 0;
 		const img = document.getElementById('about-slideshow');
