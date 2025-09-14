@@ -46,5 +46,5 @@ function animateBlocks() {
 }
 
 createBlocks();
-setInterval(animateBlocks, 900);
+setInterval(animateBlocks, 500);
 animateBlocks();

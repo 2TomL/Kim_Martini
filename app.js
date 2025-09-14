@@ -58,12 +58,12 @@ themeToggle.addEventListener('click', () => {
 				'assets/8b.gif',
 				'assets/KimM12.jpg',
 				'assets/KimM13.jpg',
-				'assets/KimM14.jpeg', // toegevoegd
 				'assets/17.gif',
 				'assets/KimM15.jpg',
 				'assets/KimMs2.jpg',
 				'assets/11.gif',
 				'assets/Kopie van IMG_7165.JPG', // toegevoegd
+				'assets/KimM14.jpeg', // toegevoegd
 				'assets/Digitakt-2.png' // toegevoegd
 			];
 		let idx = 0;
