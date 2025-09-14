@@ -27,9 +27,7 @@
 
 @media (max-width: 600px) {
   .contact-logo {
-    max-width: 64px;
-    width: 22vw;
-    min-width: 36px;
+    display: none;
   }
   .contact-logos-flex {
     gap: 0.7rem;
