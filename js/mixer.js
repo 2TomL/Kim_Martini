@@ -11,9 +11,9 @@ class LiveMixer {
         
         // Sample audio URLs (eigen samples)
         this.sampleUrls = {
-            1: 'assets/mixer/Conga.wav', // High
-            2: 'assets/mixer/kick-claps.wav',  // Mid
-            3: 'assets/mixer/bassline.wav' // Low
+            1: 'assets/mixer/HH.wav', // High
+            2: 'assets/mixer/claps.wav',  // Mid
+            3: 'assets/mixer/Kick.wav' // Low
         };
         
         this.init();
@@ -113,21 +113,27 @@ class LiveMixer {
             const deltaX = e.clientX - centerX;
             const deltaY = e.clientY - centerY;
             let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) - 90;
-            if (angle < 0) angle += 360;
+            // Zorg dat de hoek altijd tussen -180 en 180 blijft
+            if (angle < -180) angle += 360;
             if (angle > 180) angle -= 360;
-            return Math.max(-135, Math.min(135, angle));
+            // Clamp naar bereik [-135, 135] voor de dial
+            if (angle < -135) angle = -135;
+            if (angle > 135) angle = 135;
+            return angle;
         };
         
         const updateDial = (angle) => {
             currentAngle = angle;
             // -135deg = 0, 135deg = 1
-            const volume = (angle + 135) / 270;
+            let volume = (angle + 135) / 270;
+            // Clamp volume tussen 0 en 1, met extra precisie
+            volume = Math.max(0, Math.min(1, Number(volume.toFixed(4))));
             this.channels[channel].volume = volume;
             // Update visual elements
             thumb.style.transform = `translateX(-50%) rotate(${angle}deg)`;
-            valueDisplay.textContent = Math.round(volume * 100);
-            // Update dots - reduce to 7 dots for compact design
-            const activeDots = Math.floor(volume * 7);
+            valueDisplay.textContent = (volume * 100).toFixed(1);
+            // Update dots - verhoog naar 16 voor meer precisie
+            const activeDots = Math.floor(volume * 16);
             dots.forEach((dot, index) => {
                 dot.classList.toggle('filled', index < activeDots);
             });
@@ -215,17 +221,14 @@ class LiveMixer {
             currentAngle = angle;
             const volume = (angle + 135) / 270; // Convert -135 to 135 range to 0-1
             this.masterVolume = volume;
-            
             // Update visual elements
             thumb.style.transform = `translateX(-50%) rotate(${angle}deg)`;
-            valueDisplay.textContent = Math.round(volume * 100);
-            
-            // Update dots - reduce to 7 dots for compact design
-            const activeDots = Math.floor(volume * 7);
+            valueDisplay.textContent = (volume * 100).toFixed(1);
+            // Update dots - verhoog naar 16 voor meer precisie
+            const activeDots = Math.floor(volume * 16);
             dots.forEach((dot, index) => {
                 dot.classList.toggle('filled', index < activeDots);
             });
-            
             // Update all channel volumes
             for (let i = 1; i <= 3; i++) {
                 if (this.channels[i].gainNode) {
@@ -366,11 +369,12 @@ class LiveMixer {
             masterPlay.textContent = '▶';
             document.body.classList.remove('is-playing');
         } else {
-            // Start all in sync
-            const syncTime = this.audioContext.currentTime + 0.1; // schedule all to start together
+            // Start all met kleine delay tussen tracks
+            const baseTime = this.audioContext.currentTime + 0.1;
+            const delays = { 1: 0, 2: 0.12, 3: 0.34 }; // 70ms tussen high/mid, 330ms tussen mid/low
             for (let i = 1; i <= 3; i++) {
                 if (!this.channels[i].isPlaying) {
-                    await this.toggleChannel(i, syncTime, 0);
+                    await this.toggleChannel(i, baseTime + delays[i], 0);
                 }
             }
             masterPlay.classList.add('playing');
