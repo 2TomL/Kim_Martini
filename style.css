@@ -175,9 +175,24 @@
 .event-title {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--secondary-color);
   margin: 0 0 2px 0;
   letter-spacing: 0.5px;
+  background: linear-gradient(90deg, var(--secondary-color) 20%, var(--primary-color) 50%, var(--accent-color) 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  position: relative;
+}
+
+.event-title::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 100%;
+  margin-top: 2px;
+  background: linear-gradient(90deg, var(--secondary-color) 20%, var(--primary-color) 50%, var(--accent-color) 80%);
+  border-radius: 1px;
 }
 .event-location {
   font-size: 0.98rem;
