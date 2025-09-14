@@ -17,7 +17,7 @@ async function loadSoundcloudTracks() {
     mixesContainer.innerHTML = ""; // clear
 
     if (items.length === 0) {
-      mixesContainer.innerHTML = `<div class="mix-card"><div class="mix-info" style="text-align: center; padding: 40px;"><div class="mix-title">No tracks found</div><div class="mix-meta">Check back later for new releases</div><button class="cta-button" onclick="window.open('https://soundcloud.com/mickedy_mike/tracks','_blank')">Visit SoundCloud</button></div></div>`;
+  mixesContainer.innerHTML = `<div class=\"mix-card\"><div class=\"mix-info\" style=\"text-align: center; padding: 40px;\"><div class=\"mix-title\">No tracks found</div><div class=\"mix-meta\">Check back later for new releases</div><button class=\"cta-button\" onclick=\"window.open('https://soundcloud.com/kimmartini-202436244','_blank')\">Visit SoundCloud</button></div></div>`;
       return;
     }
 
@@ -73,7 +73,7 @@ async function loadSoundcloudTracks() {
     });
   } catch (err) {
     console.error("Error loading SoundCloud RSS:", err);
-    mixesContainer.innerHTML = `<div class=\"mix-card\"><div class=\"mix-info\" style=\"text-align: center; padding: 40px;\"><div class=\"mix-title\">Unable to load tracks</div><div class=\"mix-meta\">Please check your SoundCloud RSS feed or try again later</div><button class=\"cta-button\" onclick=\"window.open('https://soundcloud.com/mickedy_mike/tracks','_blank')\">Visit SoundCloud</button></div></div>`;
+  mixesContainer.innerHTML = `<div class=\"mix-card\"><div class=\"mix-info\" style=\"text-align: center; padding: 40px;\"><div class=\"mix-title\">Unable to load tracks</div><div class=\"mix-meta\">Please check your SoundCloud RSS feed or try again later</div><button class=\"cta-button\" onclick=\"window.open('https://soundcloud.com/kimmartini-202436244','_blank')\">Visit SoundCloud</button></div></div>`;
   }
 }
 

@@ -46,7 +46,7 @@
   max-width: 440px;
   width: 60vw;
   height: auto;
-  opacity: 0.38;
+  opacity: 0.58;
   filter: drop-shadow(0 2px 18px rgba(0,0,0,0.13));
   pointer-events: none;
   -webkit-user-select: none;
@@ -56,7 +56,7 @@
 @media (max-width: 600px) {
   .hero-image-transparent {
     max-width: 80vw;
-    opacity: 0.32;
+    opacity: 0.58;
   }
 }
 /* Kebab menu opvallender maken */

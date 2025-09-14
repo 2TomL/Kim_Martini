@@ -42,22 +42,28 @@ themeToggle.addEventListener('click', () => {
 			const images = [
 				'assets/KM_Logo3.png',
 				'assets/KimM1.png',
+				'assets/4.gif',
 				'assets/KimM4.jpg',
 				'assets/KimM5.jpg',
-				'assets/4.gif',
+				'assets/7.gif',
 				'assets/KimM6.jpg',
 				'assets/KimM7.jpg',
+				'assets/muziq-2.png', // toegevoegd
 				'assets/KimM8.jpg',
 				'assets/6.gif',
 				'assets/KimM9.jpeg',
+				'assets/kYm2.jpg', // toegevoegd
 				'assets/KimM10.jpg',
 				'assets/KimM11.jpg',
+				'assets/8b.gif',
 				'assets/KimM12.jpg',
-				'assets/7.gif',
 				'assets/KimM13.jpg',
+				'assets/17.gif',
 				'assets/KimM15.jpg',
 				'assets/KimMs2.jpg',
-				'assets/11.gif'
+				'assets/11.gif',
+				'assets/Kopie van IMG_7165.JPG', // toegevoegd
+				'assets/Digitakt-2.png' // toegevoegd
 			];
 		let idx = 0;
 		const img = document.getElementById('about-slideshow');
