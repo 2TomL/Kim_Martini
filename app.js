@@ -58,6 +58,7 @@ themeToggle.addEventListener('click', () => {
 				'assets/8b.gif',
 				'assets/KimM12.jpg',
 				'assets/KimM13.jpg',
+				'assets/KimM14.jpeg', // toegevoegd
 				'assets/17.gif',
 				'assets/KimM15.jpg',
 				'assets/KimMs2.jpg',
