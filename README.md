@@ -6,10 +6,14 @@ Deze website is een moderne, responsieve one-pager voor Kim Martini, elektronisc
 
 ### Events
 - Stijlvolle event cards met event-afbeelding als banner, datum-badge, locatie, line-up en Facebook-link.
-- Event cards zijn gesorteerd op datum (chronologisch).
+- Events staan altijd van laatst naar eerst (meest recente bovenaan), op alle schermformaten.
 - Klik op de eventfoto of titel opent direct het Facebook event in een nieuw tabblad.
 - Afbeeldingen voor events staan in `assets/events/`.
 - Events zijn eenvoudig uit te breiden of aan te passen in `index.html`.
+### Music (SoundCloud)
+- SoundCloud player met cover-art (track thumbnail) direct naast de soundwave, voor een moderne look.
+- Op mobiel wordt de cover-art automatisch verborgen voor een compactere layout.
+- De player schaalt automatisch breder op mobiel voor optimale touch-ervaring.
 
 ### Mixer
 - Live mixer met 3 kanalen (High, Mid, Low), elk met eigen sample.
@@ -74,14 +78,15 @@ Deze website is een moderne, responsieve one-pager voor Kim Martini, elektronisc
   - `assets/`: Afbeeldingen, logo's, favicon.
 
 ## Gebruik
-6. **Events**: Klik op een eventfoto of titel om het Facebook event te openen.
-7. **Events toevoegen**: Zie uitleg hierboven.
-8. **Mixer samples vervangen**: Zie uitleg hierboven.
-1. **Start de site** door `index.html` te openen in een browser.
-2. **Thema wisselen**: Klik op de "DARK"/"LIGHT" knop rechtsonder.
-3. **About slideshow**: Bekijk de foto's en raster-animatie in de About-sectie.
-4. **Mixer**: Op desktop kun je de live mixer bedienen.
-5. **Responsief**: De site past zich automatisch aan elk schermformaat aan.
+1. **Events**: Klik op een eventfoto of titel om het Facebook event te openen.
+2. **Events toevoegen**: Zie uitleg hierboven.
+3. **Mixer samples vervangen**: Zie uitleg hierboven.
+4. **Start de site** door `index.html` te openen in een browser.
+5. **Thema wisselen**: Klik op de "DARK"/"LIGHT" knop rechtsonder.
+6. **About slideshow**: Bekijk de foto's en raster-animatie in de About-sectie.
+7. **Mixer**: Op desktop kun je de live mixer bedienen.
+8. **SoundCloud player**: Luister naar tracks, zie de cover-art naast de soundwave (desktop/tablet), op mobiel alleen de player.
+9. **Responsief**: De site past zich automatisch aan elk schermformaat aan.
 
 ## Aanpassen
 - Voeg nieuwe foto's toe aan de About-slideshow door het `images`-array in `app.js` aan te vullen.

@@ -26,7 +26,29 @@ async function loadSoundcloudTracks() {
       const link = item.querySelector("link")?.textContent || "";
       const pubDate = item.querySelector("pubDate")?.textContent || "";
       const duration = item.querySelector("itunes\\:duration")?.textContent || "Unknown";
-      const image = item.querySelector("itunes\\:image")?.getAttribute("href") || "";
+      let image = "";
+      // Probeer verschillende manieren om de image te vinden
+      let imgEl = null;
+      try {
+        imgEl = item.querySelector("itunes\\:image");
+      } catch (e) {}
+      if (!imgEl) {
+        // Fallback: zoek met getElementsByTagName
+        const imgTags = item.getElementsByTagName("itunes:image");
+        if (imgTags && imgTags.length > 0) {
+          imgEl = imgTags[0];
+        }
+      }
+      if (!imgEl) {
+        // Fallback: zoek met getElementsByTagName("image")
+        const imgTags = item.getElementsByTagName("image");
+        if (imgTags && imgTags.length > 0) {
+          imgEl = imgTags[0];
+        }
+      }
+      if (imgEl) {
+        image = imgEl.getAttribute("href") || imgEl.getAttribute("url") || imgEl.textContent || "";
+      }
       
       // Format date
       const date = pubDate ? new Date(pubDate).toLocaleDateString() : "Unknown date";
@@ -35,10 +57,12 @@ async function loadSoundcloudTracks() {
       const card = document.createElement("div");
       card.className = "mix-card";
       card.innerHTML = `
-        <div class="soundcloud-player">
-          <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-            src="https://w.soundcloud.com/player/?url=${encodeURIComponent(link)}&color=%23ff5500&auto_play=false&show_user=false&hide_related=true&show_comments=false&show_teaser=false">
-          </iframe>
+        <div class="soundcloud-player-with-thumb">
+          <img class="mix-thumb" src="${image}" alt="Cover art" loading="lazy" />
+          <div class="soundcloud-player-iframe-wrap">
+            <iframe width="100%" height="175" scrolling="no" frameborder="no" allow="autoplay"
+              src="https://w.soundcloud.com/player/?url=${encodeURIComponent(link)}&color=%23ff5500&auto_play=false&show_user=false&hide_related=true&show_comments=false&show_teaser=false"></iframe>
+          </div>
         </div>
         <div class="mix-info">
           <div class="mix-title">${title}</div>
@@ -54,3 +78,22 @@ async function loadSoundcloudTracks() {
 }
 
 document.addEventListener('DOMContentLoaded', loadSoundcloudTracks);
+
+// Player breder op mobiel: pas iframe breedte aan na laden
+window.addEventListener('resize', resizePlayers);
+document.addEventListener('DOMContentLoaded', resizePlayers);
+
+function resizePlayers() {
+  const isMobile = window.innerWidth <= 600;
+  document.querySelectorAll('.soundcloud-player-iframe-wrap iframe').forEach(iframe => {
+    if (isMobile) {
+      iframe.style.width = '77vw';
+      iframe.style.maxWidth = 'none';
+      iframe.style.marginLeft = '-0.5vw';
+    } else {
+      iframe.style.width = '100%';
+      iframe.style.maxWidth = '';
+      iframe.style.marginLeft = '';
+    }
+  });
+}

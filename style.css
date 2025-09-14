@@ -1,3 +1,33 @@
+@media (max-width: 600px) {
+  .mix-thumb {
+    display: none;
+  }
+}
+.mix-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+/* SoundCloud player met thumbnail */
+.soundcloud-player-with-thumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+.mix-thumb {
+  width: 165px;
+  height: 165px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 2px 22px rgba(0,0,0,0.18);
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.1); /* Zelfde als .mix-card */
+}
+.soundcloud-player-iframe-wrap {
+  flex: 1 1 0%;
+  min-width: 0;
+}
 .event-image-banner-link {
   display: block;
   border-radius: 0;
@@ -195,7 +225,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.5s cubic-bezier(.77,0,.18,1);
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 30px); /* Zet iets hoger onderaan */
 }
 .contact-kebab-menu label:before, .contact-kebab-menu label:after {
   content: '';
@@ -214,6 +247,7 @@
 }
 .contact-kebab-menu .menu-toggler:checked + label {
   background: rgba(var(--secondary-color-rgb), 0.10);
+  transform: translate(-50%, 0); /* Schuif omhoog naar originele plek */
 }
 .contact-kebab-menu .menu-toggler:checked + label:before {
   transform: translateY(8px) rotate(45deg);
@@ -363,7 +397,9 @@ html[data-theme="dark"]::-webkit-scrollbar-track {
 
 /* Firefox */
 html {
+  /* Custom scrollbar for Firefox only (safe to ignore error in Chrome/Safari/Samsung Internet) */
   scrollbar-color: #00ffff #111;
+  /* For WebKit browsers, see ::-webkit-scrollbar rules above */
 }
 
 html[data-theme="dark"] {
@@ -883,7 +919,7 @@ body::after {
 .mix-card {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
