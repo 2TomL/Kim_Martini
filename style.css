@@ -1,3 +1,53 @@
+/* Contact logo's links en rechts */
+.contact-logos-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+.contact-content-center {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.contact-logo {
+  max-width: 110px;
+  width: 22vw;
+  min-width: 60px;
+  height: auto;
+  transition: filter 0.2s, transform 0.2s;
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.13));
+}
+
+@media (max-width: 600px) {
+  .contact-logo {
+    max-width: 64px;
+    width: 22vw;
+    min-width: 36px;
+  }
+  .contact-logos-flex {
+    gap: 0.7rem;
+    max-width: 98vw;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+body.is-playing .contact-logo {
+  animation: dance 3.53s infinite cubic-bezier(0.77,0,0.18,1);
+  transform-origin: bottom center;
+}
+
+body[data-theme="dark"].is-playing .contact-logo {
+  animation: dance-dark 3.53s infinite cubic-bezier(0.77,0,0.18,1);
+  transform-origin: bottom center;
+}
 @media (max-width: 600px) {
   .contact-menu-list .menu-item img {
     width: 38px;
