@@ -2160,7 +2160,7 @@ body::after {
 	.about-text {
 	  flex: 1 1 0;
 	  min-width: 200px;
-	  max-width: 420px;
+    max-width: 426px;
 	  margin: 0 auto;
 	  display: flex;
 	  flex-direction: column;
