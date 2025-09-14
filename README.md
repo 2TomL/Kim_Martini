@@ -39,6 +39,11 @@ Deze website is een moderne, responsieve one-pager voor Kim Martini, elektronisc
 - Subtitel: "Electronic Music Producer & DJ".
 - Responsief ontwerp met animaties.
 
+### Link preview & delen
+- De site bevat Open Graph en Twitter meta tags zodat bij het delen van de website (in WhatsApp, Messenger, Facebook, X/Twitter, LinkedIn, enz.) automatisch een eigen preview-afbeelding verschijnt.
+- De preview/thumbnail is `assets/link_logo.png` en wordt getoond als klikbare afbeelding bij de link in chats en social media.
+- Zie `<head>` in `index.html` voor de gebruikte meta tags.
+
 ### Navigatie
 - Bovenaan vaste navigatiebalk met logo (licht/donker afhankelijk van thema).
 - Live Mixer (alleen zichtbaar op desktop): interactieve knoppen en volumeregelaars. 
