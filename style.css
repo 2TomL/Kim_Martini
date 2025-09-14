@@ -574,18 +574,34 @@ body {
   scroll-behavior: smooth;
   transition: background-color 0.3s ease, color 0.3s ease;
 }/* Background Animation Container */
+
 .container {
-	display: flex;
-	width: 100vw;
-	height: 150vh;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: -2;
-	--count: 24;
-	--per-item: 2.0833333333%;  /* 50% / 24 */
-	--p-per-item: 0.0416666667; /* 1 / 24 */
-	animation: main 12s cubic-bezier(0.83, -0.49, 0.15, 1.84) infinite;
+  display: flex;
+  width: 100vw;
+  height: 150vh;
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -2;
+  --count: 24;
+  --per-item: 2.0833333333%;  /* 50% / 24 */
+  --p-per-item: 0.0416666667; /* 1 / 24 */
+  animation: main 12s cubic-bezier(0.83, -0.49, 0.15, 1.84) infinite;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .container {
+    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
+    left: 0;
+    top: 0;
+    z-index: -2;
+    position: fixed;
+    pointer-events: none;
+  }
 }
 
 @keyframes main {
