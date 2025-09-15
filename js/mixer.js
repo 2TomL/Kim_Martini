@@ -11,9 +11,9 @@ class LiveMixer {
         
         // Sample audio URLs (eigen samples)
         this.sampleUrls = {
-            1: 'assets/mixer/HH.wav', // High
-            2: 'assets/mixer/claps.wav',  // Mid
-            3: 'assets/mixer/Kick.wav' // Low
+            1: 'assets/mixer/HH.mp3', // High
+            2: 'assets/mixer/Claps.mp3',  // Mid
+            3: 'assets/mixer/kick.mp3' // Low
         };
         
         this.init();
@@ -371,7 +371,7 @@ class LiveMixer {
         } else {
             // Start all met kleine delay tussen tracks
             const baseTime = this.audioContext.currentTime + 0.1;
-            const delays = { 1: 0, 2: 0.12, 3: 0.34 }; // 70ms tussen high/mid, 330ms tussen mid/low
+            const delays = { 1: 0, 2: 0.02, 3: 0.02 }; // 70ms tussen high/mid, 330ms tussen mid/low
             for (let i = 1; i <= 3; i++) {
                 if (!this.channels[i].isPlaying) {
                     await this.toggleChannel(i, baseTime + delays[i], 0);
