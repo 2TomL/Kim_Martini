@@ -234,12 +234,56 @@ const knobInstances = {};
 
 // UI Event Listeners
 window.addEventListener('DOMContentLoaded', async () => {
+	// Mix select functionaliteit
+	const mixSelectItems = document.querySelectorAll('.mix-select-item');
+	function setSamplesForMix(mix) {
+		if (mix === 'mix_1') {
+			samples.low = 'assets/mixer/mix_1/kick.mp3';
+			samples.mid = 'assets/mixer/mix_1/Claps.mp3';
+			samples.high = 'assets/mixer/mix_1/HH.mp3';
+		} else if (mix === 'mix_2') {
+			samples.low = 'assets/mixer/mix_2/kick - Copy.mp3';
+			samples.mid = 'assets/mixer/mix_2/Claps - Copy.mp3';
+			samples.high = 'assets/mixer/mix_2/HH - Copy.mp3';
+		}
+	}
+	if (mixSelectItems) {
+		mixSelectItems.forEach(btn => {
+			btn.addEventListener('click', async (e) => {
+				const mix = btn.getAttribute('data-mix');
+				setSamplesForMix(mix);
+				await loadAllSamples();
+				// Sluit menu na kiezen
+				if (mixSelectMenu) mixSelectMenu.classList.remove('open');
+			});
+		});
+	}
+	// Mix select submenu openen/sluiten
+	const mixSelectBtn = document.getElementById('mix-select-btn');
+	const mixSelectMenu = document.getElementById('mix-select-menu');
+	const mixSelectClose = document.getElementById('mix-select-close');
+	if (mixSelectBtn && mixSelectMenu) {
+		mixSelectBtn.addEventListener('click', () => {
+			mixSelectMenu.classList.toggle('open');
+		});
+	}
+	if (mixSelectClose && mixSelectMenu) {
+		mixSelectClose.addEventListener('click', () => {
+			mixSelectMenu.classList.remove('open');
+		});
+	}
 	// Mixer openen via de knop in de navbar
 	const openBtn = document.getElementById('open-mixer-btn');
 	if (openBtn) {
 		openBtn.addEventListener('click', () => {
 			const popup = document.getElementById('mixer-popup-overlay');
-			if (popup) popup.style.display = 'block';
+			if (popup) {
+				if (popup.style.display === 'block') {
+					popup.style.display = 'none';
+				} else {
+					popup.style.display = 'block';
+				}
+			}
 		});
 	}
 	// Hamburger/hide button logic

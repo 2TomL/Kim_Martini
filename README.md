@@ -15,12 +15,28 @@ Deze website is een moderne, responsieve one-pager voor Kim Martini, elektronisc
 - Op mobiel wordt de cover-art automatisch verborgen voor een compactere layout.
 - De player schaalt automatisch breder op mobiel voor optimale touch-ervaring.
 
-### Mixer
-- Live mixer met 3 kanalen (High, Mid, Low), elk met eigen sample.
-- Samples zijn eenvoudig te vervangen via het `sampleUrls` object in `js/mixer.js`.
-- Mixer start nu alle kanalen perfect synchroon en loopen altijd correct (mits juiste BPM).
-- Master play/pause start of stopt alle kanalen tegelijk, altijd in sync.
-- Volumeregelaars per kanaal en master.
+
+### Mixer (uitgebreid)
+- Mixer-popup opent direct onder de navbar/logo, met moderne transparante/blur-stijl.
+- Mixer werkt met SVG draaiknoppen (met duidelijke streepjes) en PNG-iconen voor play/pause/stop.
+- Hamburger/hide-knop onderaan in de mixer sluit de popup.
+- Thema-detectie: mixer-iconen wisselen automatisch bij dark/light mode.
+- Mixer-knop in de navbar werkt als toggle (openen én sluiten).
+- Mixer-popup is altijd perfect uitgelijnd en responsief.
+- Thema-toggle knop altijd zichtbaar.
+- Mix-wisselknop (rechts als lipje/index-tab) met swap-icoon, in dezelfde stijl als de mixer.
+- Mix-wissel submenu opent als popup direct naast de mixer, met dezelfde blur/transparantie.
+- Mix-wissel submenu toont beschikbare mixes (mix_1, mix_2) en laadt direct de juiste samples.
+- Sluitknop in het submenu is verwijderd; menu sluit automatisch bij keuze.
+- Alle paden naar audio-bestanden zijn up-to-date en makkelijk uit te breiden.
+- Volledige ondersteuning voor meerdere mix-sets via assets/mixer/mix_1, mix_2, etc.
+- Mixer werkt volledig zonder page reloads.
+
+#### Mixer gebruiken
+- Open/sluit de mixer met het mixer-icoon in de navbar (toggle).
+- Kies een mix via het lipje aan de rechterkant van de mixer-module.
+- Het submenu sluit automatisch na je keuze en laadt direct de juiste samples.
+- Sluit de mixer met de hamburger/hide-knop onderaan.
 
 ### Dark Mode Iconen
 - Alle social/contact iconen hebben een light én dark variant.

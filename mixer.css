@@ -1,3 +1,115 @@
+/* Mixer-tab/lipje aan rechterkant van mixer-module */
+.mixer-tab-lip {
+		position: absolute;
+		top: 16px;
+						right: -40px;
+		width: 38px;
+		height: 48px;
+		background: rgba(255,255,255,0.08);
+		-webkit-backdrop-filter: blur(15px);
+		backdrop-filter: blur(15px);
+		border-radius: 0 16px 16px 0;
+		box-shadow: 0 8px 24px rgba(0,0,0,0.13), 0 0 30px rgba(0,0,0,0.08);
+		border: 1.5px solid rgba(255,255,255,0.13);
+		border-left: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1012;
+}
+.mixer-tab-lip .mix-select-btn {
+	position: static;
+	margin: 0 auto;
+}
+/* Mix select knop (3 streepjes) rechts naast mixer */
+.mix-select-btn {
+	position: absolute;
+			top: 16px;
+	right: 8px;
+	width: 32px;
+	height: 32px;
+		background: none;
+		border: none;
+		border-radius: 8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+		cursor: pointer;
+		z-index: 1010;
+		box-shadow: none;
+		transition: filter 0.2s;
+}
+	 .mix-select-btn:hover, .mix-select-btn:focus {
+		filter: brightness(1.2) drop-shadow(0 2px 6px #0006);
+}
+	.mix-select-icon {
+		width: 28px;
+		height: 28px;
+		object-fit: contain;
+		display: block;
+	}
+
+/* Mix select menu (submenu) */
+.mix-select-menu {
+		position: absolute;
+		top: 16px;
+		right: 44px;
+		min-width: 140px;
+		background: rgba(255,255,255,0.08);
+		-webkit-backdrop-filter: blur(15px);
+		backdrop-filter: blur(15px);
+		border: 1px solid rgba(255,255,255,0.1);
+		border-radius: 14px;
+		box-shadow: 0 8px 24px rgba(0,0,0,0.13), 0 0 30px rgba(0,0,0,0.08);
+		padding: 14px 10px 10px 10px;
+		color: var(--text-color, #f0f0f0);
+		z-index: 1011;
+		display: none;
+}
+.mix-select-menu.open {
+	display: block;
+}
+.mix-select-menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.mix-select-item {
+	width: 100%;
+	background: none;
+	border: none;
+	color: #fff;
+	font-size: 1rem;
+	padding: 8px 0;
+	text-align: left;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+.mix-select-item:hover, .mix-select-item:focus {
+	background: rgba(255,255,255,0.08);
+}
+.mix-select-close {
+	position: absolute;
+	top: 6px;
+	right: 10px;
+	background: none;
+	border: none;
+	color: #fff;
+	font-size: 1.2rem;
+	cursor: pointer;
+	opacity: 0.7;
+	transition: opacity 0.2s;
+}
+.mix-select-close:hover, .mix-select-close:focus {
+	opacity: 1;
+}
+.mixer-popup {
+	position: fixed;
+	/* ...bestaande regels... */
+	/* Zorg dat .mix-select-btn en .mix-select-menu goed gepositioneerd zijn */
+}
 /* Fallback voor zichtbaarheid gradate lines als CSS custom properties niet werken */
 .gradate line {
 	stroke: #db96cc !important;

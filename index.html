@@ -90,6 +90,18 @@
 	<div class="mixer-popup">
 	<!-- Sluitknop verwijderd, sluit nu met streepjes -->
 	<div class="mixer-popup-title-placeholder"></div>
+	<!-- Mix select knop en submenu -->
+	<div class="mixer-tab-lip">
+		<button id="mix-select-btn" class="mix-select-btn" title="Kies andere mix" aria-label="Kies andere mix">
+			<img src="assets/icons/swap_mix.png" alt="Kies andere mix" class="mix-select-icon" />
+		</button>
+	</div>
+	<div id="mix-select-menu" class="mix-select-menu">
+		<ul>
+			<li><button class="mix-select-item" data-mix="mix_1">Mix 1</button></li>
+			<li><button class="mix-select-item" data-mix="mix_2">Mix 2</button></li>
+		</ul>
+	</div>
 				<div class="mixer-container">
 			<div class="channel" id="high-channel">
 				<h2>High</h2>
