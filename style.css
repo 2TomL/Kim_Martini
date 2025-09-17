@@ -192,7 +192,7 @@
 }
 .hero-image-transparent {
   max-width: 440px;
-  width: 60vw;
+  width: 100%;
   height: auto;
   opacity: 0.58;
   filter: drop-shadow(0 2px 18px rgba(0,0,0,0.13));
@@ -2125,7 +2125,7 @@ body::after {
     rgba(var(--accent-color-rgb), 0.18)
   );
   border-radius: 3px;
-  box-shadow: 0 1px 6px rgba(var(--primary-color-rgb), 0.09);
+  box-shadow: 0 1px 6px rgba(var(--primary-color-rgb),   0.09);
   backdrop-filter: blur(0);
 }
 
@@ -2135,4 +2135,21 @@ body::after {
   0% { opacity: 0; backdrop-filter: blur(0); }
   60% { opacity: 1; backdrop-filter: blur(12px) contrast(1.5) brightness(1.2); }
   100% { opacity: 1; backdrop-filter: blur(20px) contrast(2) brightness(1.4); }
+}
+
+/* --- Force desktop hero/section styles --- */
+@media (min-width: 1025px) {
+  .hero-title {
+    font-size: 3.5rem !important;
+  }
+  .section-title {
+    font-size: 3rem !important;
+  }
+  .hero-image-wrapper {
+    max-width: 440px !important;
+  }
+  .hero-image-transparent {
+    max-width: 440px !important;
+    width: 100% !important;
+  }
 }
