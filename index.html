@@ -19,8 +19,9 @@
 	<meta name="twitter:title" content="Kim Martini" />
 	<meta name="twitter:description" content="Electronic Music Producer & DJ" />
 	<meta name="twitter:image" content="https://2TomL.github.io/Kim_Martini/assets/link_logo.png" />
-	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="font.css">
+		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="font.css">
+		<link rel="stylesheet" href="mixer.css">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -51,7 +52,6 @@
 		<div class="col"></div>
 		<div class="col"></div>
 	</div>
-
 	<!-- Navigation -->
 	<nav class="navbar">
 		<div class="nav-container">
@@ -61,108 +61,11 @@
 					   <img src="assets/logo_KM2.png" alt="kim Martini dark" class="navbar-logo navbar-logo-dark">
 					   <h1>Kim Martini</h1>
 				   </a>
+				   <button id="open-mixer-btn" class="mixer-navbar-btn" type="button" title="Open mixer" aria-label="Open mixer">
+					   <img src="assets/icons/sound-mixer.png" alt="Mixer" class="mixer-navbar-icon" />
+				   </button>
 			</div>
 			
-			<!-- Live Mixer (Desktop Only) -->
-			<div class="live-mixer" id="live-mixer">
-				<div class="mixer-header">
-					<h3>Live Mixer</h3>
-					<button class="mixer-toggle collapsed" id="mixer-toggle" aria-label="Toggle mixer">▼</button>
-				</div>
-				<div class="mixer-content collapsed" id="mixer-content">
-					<div class="mixer-channel" data-channel="1">
-						<div class="channel-header">
-							<span class="channel-label">High</span>
-							<button class="play-btn" data-channel="1" aria-label="Play High channel" title="Play or pause the High channel">▶</button>
-						</div>
-						<div class="volume-control">
-							<div class="volume-dial" data-channel="1" title="Turn to adjust the High channel volume">
-								<div class="dial-track"></div>
-								<div class="dial-thumb"></div>
-								<div class="dial-dots">
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-								</div>
-							</div>
-							<span class="volume-value">0</span>
-						</div>
-					</div>
-					
-					<div class="mixer-channel" data-channel="2">
-						<div class="channel-header">
-							<span class="channel-label">Mid</span>
-							<button class="play-btn" data-channel="2" aria-label="Play Mid channel" title="Play or pause the Mid channel">▶</button>
-						</div>
-						<div class="volume-control">
-							<div class="volume-dial" data-channel="2" title="Turn to adjust the Mid channel volume">
-								<div class="dial-track"></div>
-								<div class="dial-thumb"></div>
-								<div class="dial-dots">
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-								</div>
-							</div>
-							<span class="volume-value">0</span>
-						</div>
-					</div>
-					
-					<div class="mixer-channel" data-channel="3">
-						<div class="channel-header">
-							<span class="channel-label">Low</span>
-							<button class="play-btn" data-channel="3" aria-label="Play Low channel" title="Play or pause the Low channel">▶</button>
-						</div>
-						<div class="volume-control">
-							<div class="volume-dial" data-channel="3" title="Turn to adjust the Low channel volume">
-								<div class="dial-track"></div>
-								<div class="dial-thumb"></div>
-								<div class="dial-dots">
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-								</div>
-							</div>
-							<span class="volume-value">0</span>
-						</div>
-					</div>
-					
-					<div class="mixer-master">
-						<div class="master-header">
-							<span class="master-label">MASTER</span>
-							<button class="master-play" id="master-play" aria-label="Play all channels" title="Play or pause all channels">▶</button>
-						</div>
-						<div class="volume-control">
-							<div class="volume-dial master-dial" title="Turn to adjust the master volume">
-								<div class="dial-track"></div>
-								<div class="dial-thumb"></div>
-								<div class="dial-dots">
-									<div class="dot filled"></div>
-									<div class="dot filled"></div>
-									<div class="dot filled"></div>
-									<div class="dot filled"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-									<div class="dot"></div>
-								</div>
-							</div>
-							<span class="volume-value">50</span>
-						</div>
-					</div>
-				</div>
-			</div>
 			
 			<!-- Hamburger Menu Button (Mobile) -->
 			<button class="hamburger-menu" id="hamburger-menu" aria-label="Open main menu" title="Open main menu">
@@ -181,6 +84,111 @@
 			</ul>
 		</div>
 	</nav>
+</nav>
+<!-- Mixer Popup Overlay (hidden by default) -->
+<div id="mixer-popup-overlay" class="mixer-popup-overlay" style="display:none;">
+	<div class="mixer-popup">
+	<button class="mixer-popup-close" id="close-mixer-popup" title="Sluit mixer">&times;</button>
+	<div class="mixer-popup-title-placeholder"></div>
+				<div class="mixer-container">
+			<div class="channel" id="high-channel">
+				<h2>High</h2>
+					<div class="volume-button-knob" id="high-volume-knob" tabindex="0">
+			<svg viewBox="0 0 600 600">
+				<defs>
+					<filter id="inset-shadow">
+						<feOffset dx="0" dy="0"/>
+						<feGaussianBlur stdDeviation="6" result="offset-blur"/>
+						<feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+						<feFlood flood-color="#000" flood-opacity="0.25" result="color"/>
+						<feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+						<feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+					</filter>
+					<filter id="shadow">
+						<feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#fff" flood-opacity="0.7"/>
+					</filter>
+				</defs>
+				<g class="slider-wrap">
+					<circle class="circle" cx="300" cy="300" r="270" fill="rgba(44,44,44,0.98)" />
+					<g class="gradate" id="high-gradate"></g>
+					<g>
+						<rect class="slider" id="high-slider" x="290" y="30" width="20" height="60" rx="10" />
+						<rect class="slider slider-shadow" id="high-slider-shadow" x="290" y="30" width="20" height="60" rx="10" />
+					</g>
+				</g>
+			</svg>
+		</div>
+				<button id="high-toggle" title="Play/Pause">
+					<img class="icon-btn" src="assets/icons/PP_button.png" alt="Play/Pause" />
+				</button>
+			</div>
+			<button id="mixer-hide-btn" class="mixer-hide-btn" title="Verberg mixer" aria-label="Verberg mixer">
+				<span class="mixer-hide-bar"></span>
+				<span class="mixer-hide-bar"></span>
+				<span class="mixer-hide-bar mixer-hide-bar-bottom"></span>
+			</button>
+			<div class="channel" id="mid-channel">
+				<h2>Mid</h2>
+					<div class="volume-button-knob" id="mid-volume-knob" tabindex="0">
+			<svg viewBox="0 0 600 600">
+				<g class="slider-wrap">
+					<circle class="circle" cx="300" cy="300" r="270" />
+					<g class="gradate" id="mid-gradate"></g>
+					<g>
+						<rect class="slider" id="mid-slider" x="290" y="30" width="20" height="60" rx="10" />
+						<rect class="slider slider-shadow" id="mid-slider-shadow" x="290" y="30" width="20" height="60" rx="10" />
+					</g>
+				</g>
+			</svg>
+		</div>
+				<button id="mid-toggle" title="Play/Pause">
+					<img class="icon-btn" src="assets/icons/PP_button.png" alt="Play/Pause" />
+				</button>
+			</div>
+			<div class="channel" id="low-channel">
+				<h2>Low</h2>
+					<div class="volume-button-knob" id="low-volume-knob" tabindex="0">
+			<svg viewBox="0 0 600 600">
+				<g class="slider-wrap">
+					<circle class="circle" cx="300" cy="300" r="270" />
+					<g class="gradate" id="low-gradate"></g>
+					<g>
+						<rect class="slider" id="low-slider" x="290" y="30" width="20" height="60" rx="10" />
+						<rect class="slider slider-shadow" id="low-slider-shadow" x="290" y="30" width="20" height="60" rx="10" />
+					</g>
+				</g>
+			</svg>
+		</div>
+				<button id="low-toggle" title="Play/Pause">
+					<img class="icon-btn" src="assets/icons/PP_button.png" alt="Play/Pause" />
+				</button>
+			</div>
+			<div class="master">
+				<h2>Master</h2>
+					<div class="volume-button-knob" id="master-volume-knob" tabindex="0">
+			<svg viewBox="0 0 600 600">
+				<g class="slider-wrap">
+					<circle class="circle" cx="300" cy="300" r="270" />
+					<g class="gradate" id="master-gradate"></g>
+					<g>
+						<rect class="slider" id="master-slider" x="290" y="30" width="20" height="60" rx="10" />
+						<rect class="slider slider-shadow" id="master-slider-shadow" x="290" y="30" width="20" height="60" rx="10" />
+					</g>
+				</g>
+			</svg>
+		</div>
+					<div class="master-btns">
+					<button id="master-toggle" title="Play/Pause" aria-label="Play/Pause">
+						<img class="icon-btn" src="assets/icons/PP_button.png" alt="Play/Pause" />
+					</button>
+					<button id="master-stop" title="Stop & Reset" aria-label="Stop">
+						<img class="icon-btn" src="assets/icons/S_button.png" alt="Stop" />
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 	<!-- Mobile Menu Overlay -->
 	<div class="mobile-menu-overlay" id="mobile-menu-overlay">
@@ -364,7 +372,7 @@
 	</section>
 	<button class="theme-toggle" id="theme-toggle" title="Switch between light and dark mode">DARK</button>
 	<script src="app.js"></script>
-	<script src="js/mixer.js"></script>
 	<script src="js/soundcloud.js"></script>
+	<script src="js/mixer.js"></script>
 </body>
 </html>

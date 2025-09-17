@@ -1,3 +1,27 @@
+// Mixer popup open/close logic
+document.addEventListener('DOMContentLoaded', () => {
+	const openBtn = document.getElementById('open-mixer-btn');
+	const popup = document.getElementById('mixer-popup-overlay');
+	const closeBtn = document.getElementById('close-mixer-popup');
+	if (openBtn && popup && closeBtn) {
+		openBtn.addEventListener('click', () => {
+			popup.style.display = 'flex';
+		});
+		closeBtn.addEventListener('click', () => {
+			popup.style.display = 'none';
+		});
+		// Sluit popup met Escape
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && popup.style.display !== 'none') {
+				popup.style.display = 'none';
+			}
+		});
+		// Klik buiten popup sluit popup
+		popup.addEventListener('mousedown', (e) => {
+			if (e.target === popup) popup.style.display = 'none';
+		});
+	}
+});
 
 const themeToggle = document.getElementById('theme-toggle');
 const html = document.documentElement;

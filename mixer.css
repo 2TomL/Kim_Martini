@@ -1,0 +1,209 @@
+/* Forceer geen achtergrond/border voor mixer icon buttons */
+button#high-toggle, button#mid-toggle, button#low-toggle, button#master-toggle, button#master-stop {
+	background: none !important;
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+	padding: 0;
+}
+button#high-toggle:hover, button#mid-toggle:hover, button#low-toggle:hover, button#master-toggle:hover, button#master-stop:hover,
+button#high-toggle:focus, button#mid-toggle:focus, button#low-toggle:focus, button#master-toggle:focus, button#master-stop:focus,
+button#high-toggle:active, button#mid-toggle:active, button#low-toggle:active, button#master-toggle:active, button#master-stop:active {
+	background: none !important;
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+/* Klein font voor waarde in draaiknop */
+.volume-button-knob text {
+	font-size: 6px !important;
+	font-family: 'Inter', Arial, sans-serif;
+	font-weight: 700;
+	fill: #fff;
+	pointer-events: none;
+}
+/* Master buttons styling */
+.master-btns {
+	margin-top: 0.5rem;
+	display: flex;
+	gap: 0.5rem;
+}
+/* Volume knob styles */
+.volume-button-knob {
+	position: relative;
+	width: 64px;
+	height: 64px;
+	margin: 0.3rem auto 0.1rem auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.volume-button-knob svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.circle {
+	fill: rgba(44,44,44,0.98);
+	stroke: #080516;
+	stroke-width: 10px;
+}
+.slider-wrap {
+	filter: url(#inset-shadow);
+}
+.slider {
+	--deg: 0deg;
+	--h: 270;
+	--s: 60%;
+	transform-origin: 50% 50%;
+	transform: rotate(var(--deg));
+	fill: hsl(var(--h), var(--s), 55%);
+	cursor: grab;
+	transition: all 0.1s ease-in-out;
+}
+.volume-button-knob.without-animate .slider {
+	transition: unset;
+	cursor: grabbing;
+}
+.gradate line {
+	--deg: 0deg;
+	--h: 135;
+	--s: 10%;
+	--a: 0.2;
+	stroke-linecap: round;
+	stroke-width: 10px;
+	stroke: hsla(var(--h), var(--s), 55%, var(--a));
+	transform: rotate(var(--deg));
+	transform-origin: 50% 50%;
+}
+.gradate line:hover,
+.gradate line.active {
+	--a: 1;
+	--s: 60%;
+	filter: url(#shadow);
+}
+.icon-btn {
+	width: 22px;
+	height: 22px;
+	object-fit: contain;
+	display: inline-block;
+	vertical-align: middle;
+	filter: drop-shadow(0 1px 2px #0008);
+	transition: transform 0.13s, filter 0.13s;
+	border-radius: 7px;
+	background: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+	cursor: pointer;
+}
+.icon-btn:active {
+	transform: scale(0.93);
+	filter: brightness(0.92) drop-shadow(0 1px 2px #0006);
+	background: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+.icon-btn:hover, .icon-btn:focus {
+	filter: brightness(1.15) drop-shadow(0 2px 4px #000a);
+	background: none !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+/* Mixer Popup Overlay: altijd klikbaar, geen overlay die clicks blokkeert */
+.mixer-popup-overlay {
+	position: fixed;
+	top: 0; right: 0; bottom: 0; left: 0;
+	z-index: 1002;
+	pointer-events: none;
+}
+.mixer-popup {
+	position: fixed;
+	top: 40px;
+	right: 40px;
+	width: fit-content;
+	min-width: 180px;
+	min-height: 220px;
+	z-index: 1003;
+	pointer-events: auto;
+	display: flex;
+	flex-direction: column;
+	background: rgba(255,255,255,0.08);
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
+	border: 1px solid rgba(255,255,255,0.1);
+	border-radius: 14px;
+	box-shadow: 0 8px 24px rgba(0,0,0,0.13), 0 0 30px rgba(0,0,0,0.08);
+	padding: 8px 6px 8px 6px;
+	color: var(--text-color, #f0f0f0);
+	transition: all 0.3s;
+	overflow: visible;
+}
+.mixer-popup-title {
+	font-size: 1.5rem;
+	margin: 0 0 1.1rem 0;
+	text-align: center;
+	letter-spacing: 0.01em;
+}
+.mixer-popup-close {
+	position: absolute;
+	top: 12px; right: 16px;
+	background: none;
+	border: none;
+	color: var(--text-color, #f0f0f0);
+	font-size: 2.1rem;
+	cursor: pointer;
+	z-index: 10;
+	opacity: 0.7;
+	transition: opacity 0.2s;
+}
+.mixer-popup-close:hover, .mixer-popup-close:focus {
+	opacity: 1;
+}
+.mixer-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	gap: 0.5rem;
+	justify-content: center;
+	align-items: flex-end;
+	background: transparent;
+	border-radius: 10px;
+	border: none;
+	box-shadow: none;
+	padding: 0.2rem 0;
+	margin: 0 auto;
+}
+.channel, .master {
+	background: rgba(44,44,44,0.98);
+	border-radius: 10px;
+	padding: 0.3rem 0.3rem 0.5rem 0.3rem;
+	box-shadow: 0 1px 4px #0006;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 70px;
+	margin: 0 0.1rem;
+	align-self: stretch;
+}
+.master-btns {
+	margin-top: auto;
+	display: flex;
+	gap: 0.5rem;
+}
+.channel h2, .master h2 {
+	margin-bottom: 0.3rem;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+@media (max-width: 700px) {
+	.mixer-popup {
+		max-width: 98vw;
+		min-width: 0;
+		border-radius: 18px 18px 0 0;
+		right: 0;
+		left: 0;
+		top: 64px;
+		bottom: auto;
+	}
+}

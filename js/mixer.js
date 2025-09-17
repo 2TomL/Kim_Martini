@@ -1,420 +1,423 @@
-// Live Mixer Functionality
-class LiveMixer {
-    constructor() {
-        this.channels = {
-            1: { audio: null, volume: 0, isPlaying: false },
-            2: { audio: null, volume: 0, isPlaying: false },
-            3: { audio: null, volume: 0, isPlaying: false }
-        };
-    this.masterVolume = 0.5;
-        this.isCollapsed = true; // Start collapsed
-        
-        // Sample audio URLs (eigen samples)
-        this.sampleUrls = {
-            1: 'assets/mixer/HH.mp3', // High
-            2: 'assets/mixer/Claps.mp3',  // Mid
-            3: 'assets/mixer/kick.mp3' // Low
-        };
-        
-        this.init();
-    }
-    
-    init() {
-        this.setupAudioChannels();
-        this.setupEventListeners();
-        this.updateUI();
-    }
-    
-    setupAudioChannels() {
-        // Create audio context first
-        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Create audio objects for each channel
-        for (let i = 1; i <= 3; i++) {
-            const audio = new Audio();
-            audio.loop = true;
-            audio.volume = 0;
-            audio.preload = 'auto';
-            
-            // Initialize channel data
-            this.channels[i].source = null;
-            this.channels[i].gainNode = null;
-        }
-    }
-    
-    async createSampleBuffer(channel) {
-        // Ensure audio context is ready
-        if (!this.audioContext) {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (this.audioContext.state === 'suspended') {
-            await this.audioContext.resume();
-        }
-        const url = this.sampleUrls[channel];
-        const response = await fetch(url);
-        const arrayBuffer = await response.arrayBuffer();
-        return await this.audioContext.decodeAudioData(arrayBuffer);
-    }
-    
-    setupEventListeners() {
-        // Mixer toggle
-        const mixerToggle = document.getElementById('mixer-toggle');
-        if (mixerToggle) {
-            mixerToggle.addEventListener('click', () => this.toggleMixer());
-        }
-        
-        // Ook klikken op de hele mixer-header opent/sluit de mixer
-        const mixerHeader = document.querySelector('.mixer-header');
-        if (mixerHeader) {
-            mixerHeader.addEventListener('click', (e) => {
-                // voorkom dubbele toggle als op het pijltje wordt geklikt
-                if (!e.target.classList.contains('mixer-toggle')) {
-                    this.toggleMixer();
-                }
-            });
-        }
-        
-        // Channel play buttons
-        for (let i = 1; i <= 3; i++) {
-            const playBtn = document.querySelector(`[data-channel="${i}"].play-btn`);
-            if (playBtn) {
-                playBtn.addEventListener('click', () => this.toggleChannel(i));
-            }
-            const dial = document.querySelector(`[data-channel="${i}"].volume-dial`);
-            if (dial) {
-                this.setupDialControls(dial, i);
-            }
-        }
-        
-        // Master controls
-        const masterPlay = document.getElementById('master-play');
-        if (masterPlay) {
-            masterPlay.addEventListener('click', () => this.toggleAllChannels());
-        }
-        
-        const masterDial = document.querySelector('.master-dial');
-        if (masterDial) {
-            this.setupMasterDialControls(masterDial);
-        }
-    }
-    
-    setupDialControls(dial, channel) {
-    let isDragging = false;
-    let startAngle = 0;
-    let currentAngle = -135; // Start at minimum (volume 0)
-        
-        const thumb = dial.querySelector('.dial-thumb');
-        const valueDisplay = dial.parentElement.querySelector('.volume-value');
-        const dots = dial.querySelectorAll('.dot');
-        
-        const getAngleFromMouse = (e, rect) => {
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const deltaX = e.clientX - centerX;
-            const deltaY = e.clientY - centerY;
-            let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) - 90;
-            // Zorg dat de hoek altijd tussen -180 en 180 blijft
-            if (angle < -180) angle += 360;
-            if (angle > 180) angle -= 360;
-            // Clamp naar bereik [-135, 135] voor de dial
-            if (angle < -135) angle = -135;
-            if (angle > 135) angle = 135;
-            return angle;
-        };
-        
-        const updateDial = (angle) => {
-            currentAngle = angle;
-            // -135deg = 0, 135deg = 1
-            let volume = (angle + 135) / 270;
-            // Clamp volume tussen 0 en 1, met extra precisie
-            volume = Math.max(0, Math.min(1, Number(volume.toFixed(4))));
-            this.channels[channel].volume = volume;
-            // Update visual elements
-            thumb.style.transform = `translateX(-50%) rotate(${angle}deg)`;
-            valueDisplay.textContent = (volume * 100).toFixed(1);
-            // Update dots - verhoog naar 16 voor meer precisie
-            const activeDots = Math.floor(volume * 16);
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('filled', index < activeDots);
-            });
-            // Update audio volume
-            if (this.channels[channel].gainNode) {
-                this.channels[channel].gainNode.gain.value = volume * this.masterVolume;
-            }
-        };
-        // Zet de dial standaard helemaal links (0 volume)
-        updateDial(-135);
-        
-        dial.addEventListener('mousedown', (e) => {
-            if (this.audioContext.state === 'suspended') {
-                this.audioContext.resume();
-            }
-            
-            isDragging = true;
-            const rect = dial.getBoundingClientRect();
-            const angle = getAngleFromMouse(e, rect);
-            updateDial(angle);
-            e.preventDefault();
-        });
-        
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const rect = dial.getBoundingClientRect();
-                const angle = getAngleFromMouse(e, rect);
-                updateDial(angle);
-            }
-        });
-        
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-        
-        // Touch events for mobile
-        dial.addEventListener('touchstart', (e) => {
-            if (this.audioContext.state === 'suspended') {
-                this.audioContext.resume();
-            }
-            
-            isDragging = true;
-            const rect = dial.getBoundingClientRect();
-            const touch = e.touches[0];
-            const angle = getAngleFromMouse(touch, rect);
-            updateDial(angle);
-            e.preventDefault();
-        }, { passive: false }); // We need preventDefault, so can't be passive
-        
-        document.addEventListener('touchmove', (e) => {
-            if (isDragging && e.touches[0]) {
-                const rect = dial.getBoundingClientRect();
-                const touch = e.touches[0];
-                const angle = getAngleFromMouse(touch, rect);
-                updateDial(angle);
-                e.preventDefault();
-            }
-        }, { passive: false }); // We need preventDefault, so can't be passive
-        
-        document.addEventListener('touchend', () => {
-            isDragging = false;
-        }, { passive: true });
-    }
-    
-    setupMasterDialControls(dial) {
-        let isDragging = false;
-        let currentAngle = 0; // Start at middle (50%)
-        
-        const thumb = dial.querySelector('.dial-thumb');
-        const valueDisplay = dial.parentElement.querySelector('.volume-value');
-        const dots = dial.querySelectorAll('.dot');
-        
-        const getAngleFromMouse = (e, rect) => {
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const deltaX = e.clientX - centerX;
-            const deltaY = e.clientY - centerY;
-            let angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) - 90;
-            if (angle < 0) angle += 360;
-            if (angle > 180) angle -= 360;
-            return Math.max(-135, Math.min(135, angle));
-        };
-        
-        const updateMasterDial = (angle) => {
-            currentAngle = angle;
-            const volume = (angle + 135) / 270; // Convert -135 to 135 range to 0-1
-            this.masterVolume = volume;
-            // Update visual elements
-            thumb.style.transform = `translateX(-50%) rotate(${angle}deg)`;
-            valueDisplay.textContent = (volume * 100).toFixed(1);
-            // Update dots - verhoog naar 16 voor meer precisie
-            const activeDots = Math.floor(volume * 16);
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('filled', index < activeDots);
-            });
-            // Update all channel volumes
-            for (let i = 1; i <= 3; i++) {
-                if (this.channels[i].gainNode) {
-                    this.channels[i].gainNode.gain.value = this.channels[i].volume * this.masterVolume;
-                }
-            }
-        };
-        
-        dial.addEventListener('mousedown', (e) => {
-            if (this.audioContext.state === 'suspended') {
-                this.audioContext.resume();
-            }
-            
-            isDragging = true;
-            const rect = dial.getBoundingClientRect();
-            const angle = getAngleFromMouse(e, rect);
-            updateMasterDial(angle);
-            e.preventDefault();
-        });
-        
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const rect = dial.getBoundingClientRect();
-                const angle = getAngleFromMouse(e, rect);
-                updateMasterDial(angle);
-            }
-        });
-        
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-        
-        // Touch events
-        dial.addEventListener('touchstart', (e) => {
-            if (this.audioContext.state === 'suspended') {
-                this.audioContext.resume();
-            }
-            
-            isDragging = true;
-            const rect = dial.getBoundingClientRect();
-            const touch = e.touches[0];
-            const angle = getAngleFromMouse(touch, rect);
-            updateMasterDial(angle);
-            e.preventDefault();
-        }, { passive: false }); // We need preventDefault, so can't be passive
-        
-        document.addEventListener('touchmove', (e) => {
-            if (isDragging && e.touches[0]) {
-                const rect = dial.getBoundingClientRect();
-                const touch = e.touches[0];
-                const angle = getAngleFromMouse(touch, rect);
-                updateMasterDial(angle);
-                e.preventDefault();
-            }
-        }, { passive: false }); // We need preventDefault, so can't be passive
-        
-        document.addEventListener('touchend', () => {
-            isDragging = false;
-        }, { passive: true });
-        
-        // Initialize master at 50%
-        updateMasterDial(0);
-    }
-    
-    async toggleChannel(channel) {
-        const playBtn = document.querySelector(`[data-channel="${channel}"].play-btn`);
-        // Accept syncTime and offset for perfect sync
-        let syncTime = null, offset = 0;
-        if (arguments.length > 1) syncTime = arguments[1];
-        if (arguments.length > 2) offset = arguments[2];
-        // Ensure audio context is ready
-        if (!this.audioContext) {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (this.audioContext.state === 'suspended') {
-            await this.audioContext.resume();
-        }
-        if (!this.channels[channel].source || !this.channels[channel].isPlaying) {
-            // Create new source
-            try {
-                const audioBuffer = await this.createSampleBuffer(channel);
-                const source = this.audioContext.createBufferSource();
-                source.buffer = audioBuffer;
-                source.loop = true;
-                const gainNode = this.audioContext.createGain();
-                gainNode.gain.value = this.channels[channel].volume * this.masterVolume;
-                source.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-                this.channels[channel].source = source;
-                this.channels[channel].gainNode = gainNode;
-                if (syncTime !== null) {
-                    source.start(syncTime, offset);
-                } else {
-                    source.start();
-                }
-                this.channels[channel].isPlaying = true;
-                playBtn.classList.add('playing');
-                playBtn.textContent = '⏸';
-                // Check if any channel is playing, then add .is-playing to body
-                if (Object.values(this.channels).some(ch => ch.isPlaying)) {
-                    document.body.classList.add('is-playing');
-                }
-            } catch (error) {
-                console.error('Error creating audio for channel', channel, error);
-            }
-        } else {
-            // Stop current source
-            try {
-                this.channels[channel].source.stop();
-            } catch (error) {
-                console.log('Audio source already stopped');
-            }
-            this.channels[channel].isPlaying = false;
-            playBtn.classList.remove('playing');
-            playBtn.textContent = '▶';
-            // Check if no channel is playing, then remove .is-playing from body
-            if (!Object.values(this.channels).some(ch => ch.isPlaying)) {
-                document.body.classList.remove('is-playing');
-            }
-            // Clear source for next play
-            this.channels[channel].source = null;
-            this.channels[channel].gainNode = null;
-        }
-    }
-    
-    async toggleAllChannels() {
-        const masterPlay = document.getElementById('master-play');
-        const anyPlaying = Object.values(this.channels).some(ch => ch.isPlaying);
-        
-        if (anyPlaying) {
-            // Stop all
-            for (let i = 1; i <= 3; i++) {
-                if (this.channels[i].isPlaying) {
-                    await this.toggleChannel(i);
-                }
-            }
-            masterPlay.classList.remove('playing');
-            masterPlay.textContent = '▶';
-            document.body.classList.remove('is-playing');
-        } else {
-            // Start all met kleine delay tussen tracks
-            const baseTime = this.audioContext.currentTime + 0.1;
-            const delays = { 1: 0, 2: 0.02, 3: 0.02 }; // 70ms tussen high/mid, 330ms tussen mid/low
-            for (let i = 1; i <= 3; i++) {
-                if (!this.channels[i].isPlaying) {
-                    await this.toggleChannel(i, baseTime + delays[i], 0);
-                }
-            }
-            masterPlay.classList.add('playing');
-            masterPlay.textContent = '⏸';
-            document.body.classList.add('is-playing');
-        }
-    }
-    
-    toggleMixer() {
-        const mixerContent = document.getElementById('mixer-content');
-        const mixerToggle = document.getElementById('mixer-toggle');
-        
-        this.isCollapsed = !this.isCollapsed;
-        
-        if (this.isCollapsed) {
-            mixerContent.classList.add('collapsed');
-            mixerToggle.classList.add('collapsed');
-        } else {
-            mixerContent.classList.remove('collapsed');
-            mixerToggle.classList.remove('collapsed');
-        }
-    }
-    
-    updateUI() {
-        // Initialize UI state: knoppen links (0 volume)
-        for (let i = 1; i <= 3; i++) {
-            const dial = document.querySelector(`[data-channel="${i}"].volume-dial`);
-            if (dial) {
-                const thumb = dial.querySelector('.dial-thumb');
-                if (thumb) thumb.style.transform = 'translateX(-50%) rotate(-135deg)';
-                const valueDisplay = dial.parentElement.querySelector('.volume-value');
-                if (valueDisplay) valueDisplay.textContent = '0';
-                const dots = dial.querySelectorAll('.dot');
-                dots.forEach(dot => dot.classList.remove('filled'));
-            }
-        }
-    }
+// Sample Mixer Web Audio API
+const samples = {
+	low: 'assets/mixer/kick.mp3',
+	mid: 'assets/mixer/Claps.mp3',
+	high: 'assets/mixer/HH.mp3'
+};
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const masterGain = audioCtx.createGain();
+masterGain.gain.value = 1;
+masterGain.connect(audioCtx.destination);
+
+let buffers = {};
+let sources = {};
+let gains = {};
+let startTime = 0;
+let pauseTime = 0;
+let isPlaying = false;
+
+
+// --- SVG Knob Logic ---
+const STEP = 32;
+const DEG_RANGE = 135;
+function createSVGKnob({ knobId, gradateId, sliderId, sliderShadowId, initial = 100, onChange }) {
+	const knob = document.getElementById(knobId);
+	const gradateGroup = document.getElementById(gradateId);
+	const slider = document.getElementById(sliderId);
+	const sliderShadow = document.getElementById(sliderShadowId);
+	let value = initial;
+
+	// Gradate lines
+	const gradateLineTemplate = (deg, hue) =>
+		`<line data-deg="${deg}" class="active" style="--deg: ${deg}deg; --h: ${hue}" x1="300" y1="30" x2="300" y2="70" />`;
+	let gradateLines = ``;
+	const Q = DEG_RANGE / STEP;
+	for (let i = DEG_RANGE * -1; i <= DEG_RANGE; i += Q) {
+		gradateLines += gradateLineTemplate(i, i + DEG_RANGE * 2);
+	}
+	gradateGroup.innerHTML = gradateLines;
+	const gradateLineEls = gradateGroup.querySelectorAll("line");
+
+	function deactiveAll() {
+		gradateLineEls.forEach((l) => {
+			l.classList.remove("active");
+		});
+	}
+	function active(v) {
+		for (let i = 0; i < gradateLineEls.length; i++) {
+			const l = gradateLineEls[i];
+			if (parseFloat(l.dataset.deg) >= v) l.classList.add("active");
+		}
+	}
+	function setValue(v) {
+		value = Math.max(DEG_RANGE * -1, Math.min(DEG_RANGE, v));
+		deactiveAll();
+		active(value);
+		slider.style.setProperty("--deg", `${value}deg`);
+		sliderShadow.style.setProperty("--deg", `${value}deg`);
+		slider.style.setProperty("--h", `${value * 1 + DEG_RANGE * 2}`);
+		if (onChange) onChange(getPercent());
+	}
+	function getPercent() {
+		// Mapping: 100% is rechts (DEG_RANGE), 0% is links (-DEG_RANGE)
+		return Math.round(((value + DEG_RANGE) / (DEG_RANGE * 2)) * 100);
+	}
+	function setByPercent(percent) {
+		value = ((percent / 100) * (DEG_RANGE * 2)) - DEG_RANGE;
+		setValue(value);
+	}
+	// Drag functionaliteit
+	let dragging = false;
+	function onPointerMove(e) {
+		if (!dragging) return;
+		let clientX, clientY;
+		if (e.touches && e.touches.length) {
+			clientX = e.touches[0].clientX;
+			clientY = e.touches[0].clientY;
+		} else {
+			clientX = e.clientX;
+			clientY = e.clientY;
+		}
+		setByCoords(clientX, clientY);
+	}
+	function stopDrag() {
+		dragging = false;
+		knob.classList.remove("without-animate");
+		knob.style.cursor = "unset";
+		window.removeEventListener('mousemove', onPointerMove);
+		window.removeEventListener('mouseup', stopDrag);
+		window.removeEventListener('touchmove', onPointerMove);
+		window.removeEventListener('touchend', stopDrag);
+	}
+	function startDrag(e) {
+		dragging = true;
+		knob.classList.add("without-animate");
+		knob.style.cursor = "grabbing";
+		onPointerMove(e);
+		window.addEventListener('mousemove', onPointerMove);
+		window.addEventListener('mouseup', stopDrag);
+		window.addEventListener('touchmove', onPointerMove);
+		window.addEventListener('touchend', stopDrag);
+		e.preventDefault();
+	}
+	function setByCoords(clientX, clientY) {
+		const rect = knob.getBoundingClientRect();
+		const CX = rect.width / 2;
+		const CY = rect.height / 2;
+		const x = clientX - rect.left;
+		const y = clientY - rect.top;
+		// Draai 90 graden zodat 0 graden boven is, 100% rechtsboven
+		const r = Math.atan2(y - CY, x - CX);
+		let deg = (r * 180) / Math.PI + 90;
+		if (deg > 180) deg -= 360;
+		let v = deg;
+		v = v <= DEG_RANGE * -1 ? DEG_RANGE * -1 : v;
+		v = v >= DEG_RANGE ? DEG_RANGE : v;
+		setValue(v);
+	}
+	knob.addEventListener('mousedown', startDrag);
+	knob.addEventListener('touchstart', startDrag);
+	knob.addEventListener('click', (e) => {
+		if (!dragging) setByCoords(e.clientX, e.clientY);
+	});
+	// Keyboard
+	knob.addEventListener('keydown', e => {
+		if (e.key === 'ArrowUp') setByPercent(getPercent() + 1);
+		if (e.key === 'ArrowDown') setByPercent(getPercent() - 1);
+	});
+	// Mouse wheel
+	knob.addEventListener('wheel', e => {
+		e.preventDefault();
+		setByPercent(getPercent() - e.deltaY / 10);
+	});
+	// Init
+	setByPercent(initial);
+	return {
+		set: setByPercent,
+		get: getPercent
+	};
 }
 
-// Initialize mixer when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.liveMixer = new LiveMixer();
+// --- Mixer Logic ---
+// Load all samples
+async function loadSample(name, url) {
+	const response = await fetch(url);
+	const arrayBuffer = await response.arrayBuffer();
+	const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+	buffers[name] = audioBuffer;
+}
+
+async function loadAllSamples() {
+	await Promise.all(Object.entries(samples).map(([name, url]) => loadSample(name, url)));
+}
+
+function createSource(name, offset = 0) {
+	const source = audioCtx.createBufferSource();
+	source.buffer = buffers[name];
+	source.loop = true;
+	const gainNode = audioCtx.createGain();
+	gainNode.gain.value = knobValues[name] / 100;
+	source.connect(gainNode).connect(masterGain);
+	sources[name] = source;
+	gains[name] = gainNode;
+	return { source, gainNode };
+}
+
+function playAll(offset = 0) {
+	Object.keys(samples).forEach(name => {
+		const { source } = createSource(name, offset);
+		source.start(0, offset);
+	});
+	isPlaying = true;
+	startTime = audioCtx.currentTime - offset;
+}
+
+function stopAll() {
+	Object.values(sources).forEach(source => {
+		try { source.stop(); } catch {}
+	});
+	sources = {};
+	isPlaying = false;
+}
+
+function getCurrentOffset() {
+	if (!isPlaying) return pauseTime;
+	return (audioCtx.currentTime - startTime) % buffers.low.duration;
+}
+
+function pauseAll() {
+	pauseTime = getCurrentOffset();
+	stopAll();
+}
+
+function resumeAll() {
+	playAll(pauseTime);
+}
+
+function playChannel(name) {
+	// Altijd opnieuw starten op de juiste offset, zodat alles in sync blijft
+	if (sources[name]) {
+		try { sources[name].stop(); } catch {}
+		delete sources[name];
+	}
+	// Alleen starten als de master loopt
+	if (isPlaying) {
+		const offset = getCurrentOffset();
+		const { source } = createSource(name, offset);
+		source.start(0, offset);
+	}
+}
+
+function pauseChannel(name) {
+	if (!sources[name]) return;
+	try { sources[name].stop(); } catch {}
+	delete sources[name];
+}
+
+function updateVolume(name, value) {
+	knobValues[name] = value;
+	if (gains[name]) {
+		gains[name].gain.value = value / 100;
+	}
+}
+
+function updateMasterVolume(value) {
+	knobValues.master = value;
+	masterGain.gain.value = value / 100;
+}
+
+
+// --- Knob Instances ---
+const knobValues = { low: 100, mid: 100, high: 100, master: 100 };
+const knobInstances = {};
+
+// UI Event Listeners
+window.addEventListener('DOMContentLoaded', async () => {
+	// Hamburger/hide button logic
+	const hideBtn = document.getElementById('mixer-hide-btn');
+	if (hideBtn) {
+		hideBtn.addEventListener('click', () => {
+			const popup = document.getElementById('mixer-popup-overlay');
+			if (popup) popup.style.display = 'none';
+		});
+	}
+	// --- Theme-aware icon logic ---
+	const html = document.documentElement;
+	// Icon paths
+	const ICONS = {
+		light: {
+			playpause: 'assets/icons/PP_button.png',
+			stop: 'assets/icons/S_button.png'
+		},
+		dark: {
+			playpause: 'assets/icons/plps_btn.png',
+			stop: 'assets/icons/stop_btn.png'
+		}
+	};
+	function getTheme() {
+		return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+	}
+	function updateMixerIcons() {
+		const theme = getTheme();
+		// Channel play/pause buttons
+		['high','mid','low'].forEach(name => {
+			const btn = document.getElementById(name+'-toggle');
+			if (btn) {
+				const img = btn.querySelector('img');
+				if (img) img.src = ICONS[theme].playpause;
+			}
+		});
+		// Master play/pause
+		const masterBtn = document.getElementById('master-toggle');
+		if (masterBtn) {
+			const img = masterBtn.querySelector('img');
+			if (img) img.src = ICONS[theme].playpause;
+		}
+		// Master stop
+		const stopBtn = document.getElementById('master-stop');
+		if (stopBtn) {
+			const img = stopBtn.querySelector('img');
+			if (img) img.src = ICONS[theme].stop;
+		}
+	}
+	// Listen for theme changes
+	const themeToggle = document.getElementById('theme-toggle');
+	if (themeToggle) {
+		themeToggle.addEventListener('click', () => {
+			setTimeout(updateMixerIcons, 10); // Wait for attribute to update
+		});
+	}
+	// Initial icon set
+	updateMixerIcons();
+	// SVG Knobs koppelen
+	knobInstances.high = createSVGKnob({
+		knobId: 'high-volume-knob',
+		gradateId: 'high-gradate',
+		sliderId: 'high-slider',
+		sliderShadowId: 'high-slider-shadow',
+		initial: 100,
+		onChange: v => updateVolume('high', v)
+	});
+	knobInstances.mid = createSVGKnob({
+		knobId: 'mid-volume-knob',
+		gradateId: 'mid-gradate',
+		sliderId: 'mid-slider',
+		sliderShadowId: 'mid-slider-shadow',
+		initial: 100,
+		onChange: v => updateVolume('mid', v)
+	});
+	knobInstances.low = createSVGKnob({
+		knobId: 'low-volume-knob',
+		gradateId: 'low-gradate',
+		sliderId: 'low-slider',
+		sliderShadowId: 'low-slider-shadow',
+		initial: 100,
+		onChange: v => updateVolume('low', v)
+	});
+	knobInstances.master = createSVGKnob({
+		knobId: 'master-volume-knob',
+		gradateId: 'master-gradate',
+		sliderId: 'master-slider',
+		sliderShadowId: 'master-slider-shadow',
+		initial: 100,
+		onChange: v => updateMasterVolume(v)
+	});
+
+	await loadAllSamples();
+
+
+	// Play/Pause toggle per kanaal
+	function setToggleState(name) {
+		const btn = document.getElementById(name+'-toggle');
+		const img = btn.querySelector('img');
+		const theme = getTheme();
+		if (sources[name]) {
+			img.src = ICONS[theme].playpause;
+			img.alt = 'Pause';
+		} else {
+			img.src = ICONS[theme].playpause;
+			img.alt = 'Play';
+		}
+	}
+	['low','mid','high'].forEach(name => {
+		const btn = document.getElementById(name+'-toggle');
+		btn.onclick = () => {
+			if (sources[name]) {
+				pauseChannel(name);
+			} else {
+				playChannel(name);
+			}
+			setToggleState(name);
+		};
+		setToggleState(name);
+	});
+
+	// Update knopstatus als alles gepauzeerd of gestart wordt
+	function updateAllToggleStates() {
+		['low','mid','high'].forEach(setToggleState);
+		setMasterToggleState();
+	}
+
+	// Master play/pause knop
+	function setMasterToggleState() {
+		const btn = document.getElementById('master-toggle');
+		if (!btn) return;
+		const img = btn.querySelector('img');
+		if (!img) return;
+		const theme = getTheme();
+		if (isPlaying) {
+			img.src = ICONS[theme].playpause;
+			img.alt = 'Pause';
+		} else {
+			img.src = ICONS[theme].playpause;
+			img.alt = 'Play';
+		}
+	}
+	const masterToggleBtn = document.getElementById('master-toggle');
+	if (masterToggleBtn) {
+		masterToggleBtn.onclick = () => {
+			if (!isPlaying) {
+				resumeAll();
+			} else {
+				pauseAll();
+			}
+			updateAllToggleStates();
+		};
+	}
+	setMasterToggleState();
+
+	// Master stop knop
+	const masterStopBtn = document.getElementById('master-stop');
+	if (masterStopBtn) {
+		masterStopBtn.onclick = () => {
+			stopAll();
+			pauseTime = 0;
+			updateAllToggleStates();
+			updateMixerIcons();
+		};
+	}
+
+	// Play/Pause all
+	const allPlayBtn = document.getElementById('all-play');
+	if (allPlayBtn) {
+		allPlayBtn.onclick = () => {
+			if (!isPlaying) {
+				resumeAll();
+			} else {
+				// Start missing channels
+				['low', 'mid', 'high'].forEach(name => {
+					if (!sources[name]) playChannel(name);
+				});
+			}
+			updateAllToggleStates();
+		};
+	}
+	const allPauseBtn = document.getElementById('all-pause');
+	if (allPauseBtn) {
+		allPauseBtn.onclick = () => {
+			pauseAll();
+			updateAllToggleStates();
+		};
+	}
 });
