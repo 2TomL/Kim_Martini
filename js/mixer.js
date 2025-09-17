@@ -1,8 +1,8 @@
 // Sample Mixer Web Audio API
 const samples = {
-	low: 'assets/mixer/kick.mp3',
-	mid: 'assets/mixer/Claps.mp3',
-	high: 'assets/mixer/HH.mp3'
+	low: 'assets/mixer/mix_1/kick.mp3',
+	mid: 'assets/mixer/mix_1/Claps.mp3',
+	high: 'assets/mixer/mix_1/HH.mp3'
 };
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -234,6 +234,14 @@ const knobInstances = {};
 
 // UI Event Listeners
 window.addEventListener('DOMContentLoaded', async () => {
+	// Mixer openen via de knop in de navbar
+	const openBtn = document.getElementById('open-mixer-btn');
+	if (openBtn) {
+		openBtn.addEventListener('click', () => {
+			const popup = document.getElementById('mixer-popup-overlay');
+			if (popup) popup.style.display = 'block';
+		});
+	}
 	// Hamburger/hide button logic
 	const hideBtn = document.getElementById('mixer-hide-btn');
 	if (hideBtn) {

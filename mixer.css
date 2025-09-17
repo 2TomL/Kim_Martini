@@ -1,3 +1,29 @@
+/* Fallback voor zichtbaarheid gradate lines als CSS custom properties niet werken */
+.gradate line {
+	stroke: #db96cc !important;
+	stroke-width: 6px !important;
+	opacity: 0.7 !important;
+}
+/* Zichtbare streepjes in draaiknoppen */
+.gradate line {
+	--deg: 0deg;
+	--h: 0;
+	--s: 0%;
+	--a: 0.7;
+	stroke-linecap: round;
+	stroke-width: 6px;
+	stroke: hsla(var(--h), var(--s), 100%, var(--a));
+	transform: rotate(var(--deg));
+	transform-origin: 50% 50%;
+	transition: stroke 0.2s, stroke-width 0.2s;
+}
+.gradate line.active, .gradate line:hover {
+	--a: 1;
+	--s: 0%;
+	stroke: hsla(var(--h), var(--s), 100%, 1);
+	filter: url(#shadow);
+	stroke-width: 8px;
+}
 /* Forceer geen achtergrond/border voor mixer icon buttons */
 button#high-toggle, button#mid-toggle, button#low-toggle, button#master-toggle, button#master-stop {
 	background: none !important;
@@ -65,23 +91,6 @@ button#high-toggle:active, button#mid-toggle:active, button#low-toggle:active, b
 	transition: unset;
 	cursor: grabbing;
 }
-.gradate line {
-	--deg: 0deg;
-	--h: 135;
-	--s: 10%;
-	--a: 0.2;
-	stroke-linecap: round;
-	stroke-width: 10px;
-	stroke: hsla(var(--h), var(--s), 55%, var(--a));
-	transform: rotate(var(--deg));
-	transform-origin: 50% 50%;
-}
-.gradate line:hover,
-.gradate line.active {
-	--a: 1;
-	--s: 60%;
-	filter: url(#shadow);
-}
 .icon-btn {
 	width: 22px;
 	height: 22px;
@@ -118,8 +127,9 @@ button#high-toggle:active, button#mid-toggle:active, button#low-toggle:active, b
 }
 .mixer-popup {
 	position: fixed;
-	top: 40px;
-	right: 40px;
+	top: 88px;
+	left: 260px;
+	right: auto;
 	width: fit-content;
 	min-width: 180px;
 	min-height: 220px;
