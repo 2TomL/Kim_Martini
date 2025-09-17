@@ -1172,8 +1172,7 @@ body::after {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-transform: uppercase;
-  letter-spacing: 3px;
+  text-fill-color: transparent;
   position: relative;
 }
 
@@ -2152,4 +2151,14 @@ body::after {
     max-width: 440px !important;
     width: 100% !important;
   }
+}
+
+/* Mixer button pulse glow effect (like kebab) - always active, also on mobile */
+.mixer-navbar-btn {
+  animation: mixer-pulse 1.6s infinite;
+}
+@keyframes mixer-pulse {
+  0% { filter: drop-shadow(0 0 0px var(--accent-color)); }
+  50% { filter: drop-shadow(0 0 12px var(--accent-color)); }
+  100% { filter: drop-shadow(0 0 0px var(--accent-color)); }
 }
