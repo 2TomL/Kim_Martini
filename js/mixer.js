@@ -295,11 +295,17 @@ window.addEventListener('DOMContentLoaded', async () => {
 		});
 	}
 	// Hamburger/hide button logic
+
 	const hideBtn = document.getElementById('mixer-hide-btn');
 	if (hideBtn) {
 		hideBtn.addEventListener('click', () => {
 			const popup = document.getElementById('mixer-popup-overlay');
 			if (popup) popup.style.display = 'none';
+			// Reset zoom van mix-icoon
+			const mixerIcon = document.querySelector('.mixer-navbar-icon');
+			if (mixerIcon) {
+				mixerIcon.style.transform = '';
+			}
 		});
 	}
 	// --- Theme-aware icon logic ---

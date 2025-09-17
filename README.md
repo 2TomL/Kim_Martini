@@ -116,3 +116,5 @@ Deze website is een moderne, responsieve one-pager voor Kim Martini, elektronisc
 
 ## Licentie
 Deze site is gemaakt voor Kim Martini. Gebruik en aanpassingen in overleg.
+
+Gemaakt met liefde en zorg, 
