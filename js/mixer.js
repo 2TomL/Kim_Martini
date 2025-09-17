@@ -164,6 +164,7 @@ function createSource(name, offset = 0) {
 	return { source, gainNode };
 }
 
+
 function playAll(offset = 0) {
 	Object.keys(samples).forEach(name => {
 		const { source } = createSource(name, offset);
@@ -171,7 +172,9 @@ function playAll(offset = 0) {
 	});
 	isPlaying = true;
 	startTime = audioCtx.currentTime - offset;
+	document.body.classList.add('is-playing');
 }
+
 
 function stopAll() {
 	Object.values(sources).forEach(source => {
@@ -179,6 +182,7 @@ function stopAll() {
 	});
 	sources = {};
 	isPlaying = false;
+	document.body.classList.remove('is-playing');
 }
 
 function getCurrentOffset() {
@@ -186,13 +190,17 @@ function getCurrentOffset() {
 	return (audioCtx.currentTime - startTime) % buffers.low.duration;
 }
 
+
 function pauseAll() {
 	pauseTime = getCurrentOffset();
 	stopAll();
+	document.body.classList.remove('is-playing');
 }
+
 
 function resumeAll() {
 	playAll(pauseTime);
+	document.body.classList.add('is-playing');
 }
 
 function playChannel(name) {
