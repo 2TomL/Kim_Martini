@@ -156,6 +156,8 @@ function createSource(name, offset = 0) {
 	const source = audioCtx.createBufferSource();
 	source.buffer = buffers[name];
 	source.loop = true;
+	source.loopStart = 0;
+	source.loopEnd = buffers.low.duration;
 	const gainNode = audioCtx.createGain();
 	gainNode.gain.value = knobValues[name] / 100;
 	source.connect(gainNode).connect(masterGain);
