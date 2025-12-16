@@ -249,15 +249,22 @@ window.addEventListener('DOMContentLoaded', async () => {
 			samples.low = 'assets/mixer/mix_1/kick.mp3';
 			samples.mid = 'assets/mixer/mix_1/Claps.mp3';
 			samples.high = 'assets/mixer/mix_1/HH.mp3';
+			knobValues.low = 100;
+			knobValues.mid = 100;
+			knobValues.high = 100;
 		} else if (mix === 'mix_2') {
-			samples.low = 'assets/mixer/mix_2/kick - Copy.mp3';
-			samples.mid = 'assets/mixer/mix_2/Claps - Copy.mp3';
-			samples.high = 'assets/mixer/mix_2/HH - Copy.mp3';
+			samples.low = 'assets/mixer/mix_2/2Spooky-baseline-soundz2.mp3';
+			samples.mid = 'assets/mixer/mix_2/2Spooky-ACIDmelodie-soundz2.mp3';
+			samples.high = 'assets/mixer/mix_2/2Spooky-OpENHATS-soundz2.mp3';
+			knobValues.low = 80;
+			knobValues.mid = 80;
+			knobValues.high = 85;
 		}
 	}
 	if (mixSelectItems) {
 		mixSelectItems.forEach(btn => {
 			btn.addEventListener('click', async (e) => {
+				stopAll();
 				const mix = btn.getAttribute('data-mix');
 				setSamplesForMix(mix);
 				await loadAllSamples();
