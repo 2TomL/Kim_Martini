@@ -239,12 +239,14 @@ function renderPaginatedTracks() {
   // Reset loading attempts on successful load
   loadingAttempts = 0;
   
-  // Initialize iframe opacity for loading effect
+  // Initialize iframe opacity for loading effect and apply responsive sizing
   setTimeout(() => {
     document.querySelectorAll('.soundcloud-player-iframe-wrap iframe').forEach(iframe => {
       iframe.style.opacity = '0';
       iframe.style.transition = 'opacity 0.3s ease-in-out';
     });
+    // Apply responsive player sizing after iframes are rendered
+    resizePlayers();
   }, 100);
 }
 
@@ -306,9 +308,9 @@ function resizePlayers() {
   const isMobile = window.innerWidth <= 600;
   document.querySelectorAll('.soundcloud-player-iframe-wrap iframe').forEach(iframe => {
     if (isMobile) {
-      iframe.style.width = '77vw';
+      iframe.style.width = '100%';
       iframe.style.maxWidth = 'none';
-      iframe.style.marginLeft = '-0.5vw';
+      iframe.style.marginLeft = '0';
     } else {
       iframe.style.width = '100%';
       iframe.style.maxWidth = '';
