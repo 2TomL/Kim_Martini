@@ -7,6 +7,11 @@ let allTracks = [];
 let currentPage = 0;
 const TRACKS_PER_PAGE = 5;
 
+// Cache for successful proxy
+let workingProxy = null;
+let lastSuccessfulFetch = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 // Show loading state
 function showLoadingState() {
   mixesContainer.innerHTML = `
@@ -18,11 +23,12 @@ function showLoadingState() {
     </div>`;
 }
 
-// Multiple proxy URLs for better reliability
+// Multiple proxy URLs for better reliability (ordered by reliability)
 const proxyUrls = [
   'https://api.allorigins.win/raw?url=',
   'https://corsproxy.io/?',
-  'https://api.codetabs.com/v1/proxy?quest='
+  'https://api.codetabs.com/v1/proxy?quest=',
+  'https://cors-anywhere.herokuapp.com/' // May require temporary access request
 ];
 
 async function loadSoundcloudTracks() {
@@ -34,8 +40,11 @@ async function loadSoundcloudTracks() {
   
   let lastError = null;
   
+  // Check if we have a working proxy from cache
+  const proxyList = workingProxy ? [workingProxy, ...proxyUrls.filter(p => p !== workingProxy)] : proxyUrls;
+  
   // Try multiple proxies for better reliability
-  for (const proxyBase of proxyUrls) {
+  for (const proxyBase of proxyList) {
     try {
       const proxyUrl = `${proxyBase}${encodeURIComponent(rssUrl)}`;
       console.log(`Attempting to load from proxy: ${proxyBase}`);
@@ -45,10 +54,12 @@ async function loadSoundcloudTracks() {
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
       const response = await fetch(proxyUrl, {
+        method: 'GET',
         headers: {
           'Accept': 'application/rss+xml, application/xml, text/xml',
           'Cache-Control': 'no-cache'
         },
+        mode: 'cors',
         signal: controller.signal
       });
       
@@ -83,6 +94,11 @@ async function loadSoundcloudTracks() {
         showNoTracksMessage();
         return;
       }
+      
+      // Cache the working proxy and timestamp
+      workingProxy = proxyBase;
+      lastSuccessfulFetch = Date.now();
+      console.log(`✓ Successfully loaded tracks via ${proxyBase}`);
       
       // Successfully loaded tracks, break out of proxy loop
       allTracks = Array.from(items);
