@@ -26,9 +26,9 @@ function showLoadingState() {
 // Multiple proxy URLs for better reliability (ordered by reliability)
 const proxyUrls = [
   'https://api.allorigins.win/raw?url=',
-  'https://corsproxy.io/?',
-  'https://api.codetabs.com/v1/proxy?quest=',
-  'https://cors-anywhere.herokuapp.com/' // May require temporary access request
+  'https://thingproxy.freeboard.io/fetch/',
+  'https://proxy.cors.sh/',
+  'https://corsproxy.io/?'
 ];
 
 async function loadSoundcloudTracks() {
@@ -51,15 +51,13 @@ async function loadSoundcloudTracks() {
       
       // Create fetch with timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
       
       const response = await fetch(proxyUrl, {
         method: 'GET',
         headers: {
-          'Accept': 'application/rss+xml, application/xml, text/xml',
-          'Cache-Control': 'no-cache'
+          'Accept': 'application/rss+xml, application/xml, text/xml, */*'
         },
-        mode: 'cors',
         signal: controller.signal
       });
       
