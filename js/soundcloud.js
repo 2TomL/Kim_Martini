@@ -11,6 +11,39 @@ const TRACKS_PER_PAGE = 5;
 let workingProxy = null;
 let lastSuccessfulFetch = null;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const STORAGE_KEY = 'sc_working_proxy';
+const STORAGE_TIMESTAMP_KEY = 'sc_proxy_timestamp';
+
+// Initialize proxy from localStorage if available and fresh
+function initializeProxyFromStorage() {
+  try {
+    const cached = localStorage.getItem(STORAGE_KEY);
+    const timestamp = localStorage.getItem(STORAGE_TIMESTAMP_KEY);
+    
+    if (cached && timestamp) {
+      const age = Date.now() - parseInt(timestamp);
+      if (age < CACHE_DURATION) {
+        workingProxy = cached;
+        lastSuccessfulFetch = parseInt(timestamp);
+        console.log(`✓ Using cached proxy from localStorage: ${cached}`);
+        return true;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to read localStorage:', e);
+  }
+  return false;
+}
+
+// Save working proxy to localStorage
+function saveProxyToStorage(proxy) {
+  try {
+    localStorage.setItem(STORAGE_KEY, proxy);
+    localStorage.setItem(STORAGE_TIMESTAMP_KEY, Date.now().toString());
+  } catch (e) {
+    console.warn('Failed to save to localStorage:', e);
+  }
+}
 
 // Show loading state
 function showLoadingState() {
@@ -23,12 +56,13 @@ function showLoadingState() {
     </div>`;
 }
 
-// Multiple proxy URLs for better reliability (ordered by reliability)
+// Multiple proxy URLs (ordered by speed and reliability)
+// api.allorigins.win is fastest and most reliable
 const proxyUrls = [
   'https://api.allorigins.win/raw?url=',
-  'https://thingproxy.freeboard.io/fetch/',
+  'https://corsproxy.io/?',
   'https://proxy.cors.sh/',
-  'https://corsproxy.io/?'
+  'https://thingproxy.freeboard.io/fetch/'
 ];
 
 async function loadSoundcloudTracks() {
@@ -40,80 +74,99 @@ async function loadSoundcloudTracks() {
   
   let lastError = null;
   
-  // Check if we have a working proxy from cache
-  const proxyList = workingProxy ? [workingProxy, ...proxyUrls.filter(p => p !== workingProxy)] : proxyUrls;
+  // Try cached proxy first if available
+  const proxyList = workingProxy 
+    ? [workingProxy, ...proxyUrls.filter(p => p !== workingProxy)]
+    : proxyUrls;
   
-  // Try multiple proxies for better reliability
+  // Try each proxy sequentially
   for (const proxyBase of proxyList) {
-    try {
-      const proxyUrl = `${proxyBase}${encodeURIComponent(rssUrl)}`;
-      console.log(`Attempting to load from proxy: ${proxyBase}`);
-      
-      // Create fetch with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
-      
-      const response = await fetch(proxyUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/rss+xml, application/xml, text/xml, */*'
-        },
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      const xmlText = await response.text();
-      
-      if (!xmlText || xmlText.trim() === '') {
-        throw new Error('Empty response received');
-      }
-      
-      // Parse de RSS XML
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-      
-      // Check for XML parsing errors
-      const parserError = xmlDoc.querySelector('parsererror');
-      if (parserError) {
-        throw new Error(`XML parsing error: ${parserError.textContent}`);
-      }
-      
-      const items = xmlDoc.querySelectorAll("item");
-      console.log(`Found ${items.length} tracks`);
-
-      mixesContainer.innerHTML = ""; // clear loading state
-
-      if (items.length === 0) {
-        showNoTracksMessage();
-        return;
-      }
-      
-      // Cache the working proxy and timestamp
+    const result = await tryProxy(proxyBase, rssUrl);
+    if (result.success) {
+      // Save to localStorage for next load
+      saveProxyToStorage(proxyBase);
       workingProxy = proxyBase;
       lastSuccessfulFetch = Date.now();
       console.log(`✓ Successfully loaded tracks via ${proxyBase}`);
       
-      // Successfully loaded tracks, break out of proxy loop
-      allTracks = Array.from(items);
+      // Process and render tracks
+      allTracks = result.tracks;
       currentPage = 0;
       renderPaginatedTracks();
+      mixesContainer.innerHTML = ""; // clear loading state before rendering
+      renderPaginatedTracks();
       return;
-      
-    } catch (error) {
-      console.warn(`Proxy ${proxyBase} failed:`, error.message);
-      lastError = error;
-      continue; // Try next proxy
     }
+    
+    lastError = result.error;
   }
   
   // All proxies failed
   console.error("All proxy attempts failed. Last error:", lastError);
   showErrorMessage(lastError);
+}
+
+// Try a single proxy with timeout
+async function tryProxy(proxyBase, rssUrl) {
+  try {
+    const proxyUrl = `${proxyBase}${encodeURIComponent(rssUrl)}`;
+    console.log(`Attempting to load from proxy: ${proxyBase}`);
+    
+    // Create fetch with timeout (15 seconds instead of 20)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    
+    const response = await fetch(proxyUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/rss+xml, application/xml, text/xml, */*'
+      },
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const xmlText = await response.text();
+    
+    if (!xmlText || xmlText.trim() === '') {
+      throw new Error('Empty response received');
+    }
+    
+    // Parse RSS XML
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+    
+    // Check for XML parsing errors
+    const parserError = xmlDoc.querySelector('parsererror');
+    if (parserError) {
+      throw new Error(`XML parsing error: ${parserError.textContent}`);
+    }
+    
+    const items = xmlDoc.querySelectorAll("item");
+    console.log(`Found ${items.length} tracks`);
+    
+    if (items.length === 0) {
+      throw new Error('No tracks found in RSS');
+    }
+    
+    return {
+      success: true,
+      tracks: Array.from(items),
+      error: null
+    };
+    
+  } catch (error) {
+    console.warn(`Proxy ${proxyBase} failed:`, error.message);
+    return {
+      success: false,
+      tracks: [],
+      error: error
+    };
+  }
 }
 
 function showNoTracksMessage() {
@@ -280,6 +333,9 @@ function changePage(direction) {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+  // Try to load cached proxy first
+  initializeProxyFromStorage();
+  
   // Add retry functionality to window for global access
   window.retryLoading = retryLoading;
   window.changePage = changePage;

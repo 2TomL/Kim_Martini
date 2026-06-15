@@ -1,46 +1,26 @@
-// Mixer popup open/close logic
-document.addEventListener('DOMContentLoaded', () => {
-	const openBtn = document.getElementById('open-mixer-btn');
-	const popup = document.getElementById('mixer-popup-overlay');
-	const closeBtn = document.getElementById('close-mixer-popup');
-	if (openBtn && popup && closeBtn) {
-		openBtn.addEventListener('click', () => {
-			popup.style.display = 'flex';
-		});
-		closeBtn.addEventListener('click', () => {
-			popup.style.display = 'none';
-		});
-		// Sluit popup met Escape
-		document.addEventListener('keydown', (e) => {
-			if (e.key === 'Escape' && popup.style.display !== 'none') {
-				popup.style.display = 'none';
-			}
-		});
-		// Klik buiten popup sluit popup
-		popup.addEventListener('mousedown', (e) => {
-			if (e.target === popup) popup.style.display = 'none';
-		});
-	}
-});
-
+// Theme toggle (applies to entire site)
 const themeToggle = document.getElementById('theme-toggle');
 const html = document.documentElement;
 
-themeToggle.addEventListener('click', () => {
-	if (html.getAttribute('data-theme') === 'dark') {
-		html.removeAttribute('data-theme');
-		themeToggle.textContent = 'DARK';
-	} else {
-		html.setAttribute('data-theme', 'dark');
-		themeToggle.textContent = 'LIGHT';
-	}
-});
+if (themeToggle) {
+	themeToggle.addEventListener('click', () => {
+		if (html.getAttribute('data-theme') === 'dark') {
+			html.removeAttribute('data-theme');
+			themeToggle.textContent = 'DARK';
+		} else {
+			html.setAttribute('data-theme', 'dark');
+			themeToggle.textContent = 'LIGHT';
+		}
+	});
+}
 
-		// Mobile menu functionality
-		const hamburgerMenu = document.getElementById('hamburger-menu');
-		const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-		const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+// Mobile menu functionality
+document.addEventListener('DOMContentLoaded', () => {
+	const hamburgerMenu = document.getElementById('hamburger-menu');
+	const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+	const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
+	if (hamburgerMenu && mobileMenuOverlay) {
 		hamburgerMenu.addEventListener('click', () => {
 			hamburgerMenu.classList.toggle('active');
 			mobileMenuOverlay.classList.toggle('active');
@@ -61,6 +41,8 @@ themeToggle.addEventListener('click', () => {
 				mobileMenuOverlay.classList.remove('active');
 			}
 		});
+	}
+});
 		
 	(function() {
 			const images = [

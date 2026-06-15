@@ -287,17 +287,27 @@ window.addEventListener('DOMContentLoaded', async () => {
 			mixSelectMenu.classList.remove('open');
 		});
 	}
-	// Mixer openen via de knop in de navbar
+	// Mixer popup toggle via navbar button
 	const openBtn = document.getElementById('open-mixer-btn');
-	if (openBtn) {
-		openBtn.addEventListener('click', () => {
-			const popup = document.getElementById('mixer-popup-overlay');
-			if (popup) {
-				if (popup.style.display === 'block') {
-					popup.style.display = 'none';
-				} else {
-					popup.style.display = 'block';
-				}
+	const popup = document.getElementById('mixer-popup-overlay');
+	if (openBtn && popup) {
+		openBtn.addEventListener('click', (e) => {
+			// Toggle between flex (visible) and none (hidden)
+			popup.style.display = popup.style.display === 'flex' ? 'none' : 'flex';
+			e.stopPropagation();
+		});
+		
+		// Close popup when clicking outside (on the overlay background)
+		popup.addEventListener('click', (e) => {
+			if (e.target === popup) {
+				popup.style.display = 'none';
+			}
+		});
+		
+		// Close popup with Escape key
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && popup.style.display === 'flex') {
+				popup.style.display = 'none';
 			}
 		});
 	}
