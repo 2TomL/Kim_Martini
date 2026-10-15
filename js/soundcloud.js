@@ -184,7 +184,7 @@ async function loadSoundcloudTracks() {
 
     if (tracksListChanged(tracks)) {
       allTracks = tracks;
-      currentPage = 0;
+      currentPage = Math.min(currentPage, Math.ceil(tracks.length / TRACKS_PER_PAGE) - 1);
       renderPaginatedTracks();
     }
   } catch (aggregateError) {
