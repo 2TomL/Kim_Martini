@@ -67,6 +67,8 @@
 
 /* Center and style the site credit below contact section */
 .site-credit-centered {
+  position: relative;
+  z-index: 2;
   text-align: center;
   margin: -40px 0 1.2rem 0;
   font-size: 1rem;
