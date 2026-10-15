@@ -38,6 +38,28 @@
   animation: socials-pulse 1.5s infinite alternate;
 }
 
+.site-credit-socials::before {
+  content: "↑";
+  display: block;
+  width: 2rem;
+  margin: 0 auto 0.25rem;
+  color: var(--primary-color, #ff6a00);
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  transform: translateX(7px) scaleX(1.45);
+  transform-origin: center;
+  -webkit-text-stroke: 1px var(--primary-color, #ff6a00);
+  -webkit-text-fill-color: var(--primary-color, #ff6a00);
+}
+
+@media (max-width: 600px) {
+  .site-credit-socials::before {
+    transform: translateX(2px) scaleX(1.45);
+  }
+}
+
 @keyframes socials-pulse {
   0% { text-shadow: 0 2px 16px var(--secondary-color, #ffd700), 0 0px 2px #fff; }
   100% { text-shadow: 0 4px 32px var(--primary-color, #ff6a00), 0 0px 8px #fff; }
@@ -619,7 +641,7 @@
   padding: 0;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: calc(50% + 6px);
   transform: translate(-50%, -50%);
   width: 0;
   height: 0;
@@ -638,25 +660,25 @@
   pointer-events: auto;
 }
 .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(1) {
-  transform: translate(-50%, -50%) rotate(-108deg) translateY(80px) scale(1);
+  transform: translate(-50%, -50%) rotate(-108deg) translateY(92px) scale(1);
 }
 .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(2) {
-  transform: translate(-50%, -50%) rotate(-72deg) translateY(80px) scale(1);
+  transform: translate(-50%, -50%) rotate(-72deg) translateY(92px) scale(1);
 }
 .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(3) {
-  transform: translate(-50%, -50%) rotate(-36deg) translateY(80px) scale(1);
+  transform: translate(-50%, -50%) rotate(-36deg) translateY(92px) scale(1);
 }
 .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(4) {
-  transform: translate(-50%, -50%) rotate(0deg) translateY(80px) scale(1);
+  transform: translate(-50%, -50%) rotate(0deg) translateY(92px) scale(1);
 }
 .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(5) {
-  transform: translate(-50%, -50%) rotate(36deg) translateY(80px) scale(1);
+  transform: translate(-50%, -50%) rotate(36deg) translateY(92px) scale(1);
 }
 .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(6) {
-  transform: translate(-50%, -50%) rotate(72deg) translateY(80px) scale(1);
+  transform: translate(-50%, -50%) rotate(72deg) translateY(92px) scale(1);
 }
 .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item:nth-child(7) {
-  transform: translate(-50%, -50%) rotate(108deg) translateY(80px) scale(1);
+  transform: translate(-50%, -50%) rotate(108deg) translateY(92px) scale(1);
 }
 .contact-menu-list .menu-item a {
   display: flex;
@@ -710,6 +732,14 @@
   fill: currentColor;
   display: block;
 }
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item a {
+  width: 44px;
+  height: 44px;
+}
+.contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item img {
+  width: 37px;
+  height: 37px;
+}
 @media (max-width: 600px) {
   .contact-kebab-menu {
     width: 44px;
@@ -723,6 +753,14 @@
   .contact-menu-list .menu-item svg {
     width: 22px;
     height: 22px;
+  }
+  .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item a {
+    width: 42px;
+    height: 42px;
+  }
+  .contact-kebab-menu .menu-toggler:checked ~ .contact-menu-list .menu-item img {
+    width: 35px;
+    height: 35px;
   }
 }
 [data-theme="dark"] .contact-menu-list .menu-item a {

@@ -25,6 +25,7 @@ const TRACKS_TIMESTAMP_KEY = 'sc_tracks_cache_timestamp';
 // Built-in list so the Music section always has players on first paint,
 // without waiting for CORS proxies. Background fetch keeps it up to date.
 const FALLBACK_TRACKS = [
+  { title: "GGGGroovy - MixTape 014", link: "https://soundcloud.com/kimmartini-202436244/ggggroovy-mixtape-014", pubDate: "Tue, 08 Sep 2026 15:53:56 +0000", duration: "01:21:18", image: "https://i1.sndcdn.com/artworks-Kj5jnWCrrPXQ9Eyw-OUs72Q-t500x500.jpg" },
   { title: "ddddon't GO - Mixtape 013", link: "https://soundcloud.com/kimmartini-202436244/ddddont-go-mixtape-013", pubDate: "Sat, 20 Jun 2026 20:43:14 +0000", duration: "01:33:40", image: "https://i1.sndcdn.com/artworks-uQMQD53rPN7KNoaW-ijUoFg-t500x500.jpg" },
   { title: "the lowrider-mixtape012", link: "https://soundcloud.com/kimmartini-202436244/the-lowrider-mixtape012", pubDate: "Fri, 19 Jun 2026 19:29:11 +0000", duration: "01:44:49", image: "https://i1.sndcdn.com/artworks-wjIi2gUGYsE4FBzD-yp6oRg-t500x500.png" },
   { title: "'Nous sommes' - Kim Martini - Mixtape 011", link: "https://soundcloud.com/kimmartini-202436244/nous-sommes-kim-martini", pubDate: "Sat, 30 May 2026 17:21:52 +0000", duration: "01:00:48", image: "https://i1.sndcdn.com/artworks-gSTjNszslUSdkH5N-yNcNsg-t500x500.png" },
@@ -162,9 +163,10 @@ async function loadSoundcloudTracks() {
   const proxyList = workingProxy
     ? [workingProxy, ...proxyUrls.filter(p => p !== workingProxy)]
     : proxyUrls;
+  const freshRssUrl = `${RSS_URL}?_=${Date.now()}`;
 
   const attempts = proxyList.map(proxyBase =>
-    tryProxy(proxyBase, RSS_URL).then(result => {
+    tryProxy(proxyBase, freshRssUrl).then(result => {
       if (!result.success) throw result.error || new Error('Proxy failed');
       return { proxyBase, tracks: result.tracks };
     })
@@ -177,6 +179,7 @@ async function loadSoundcloudTracks() {
     saveTracksToStorage(tracks);
     workingProxy = proxyBase;
     lastSuccessfulFetch = Date.now();
+    loadingAttempts = 0;
     console.log(`✓ Successfully loaded tracks via ${proxyBase}`);
 
     if (tracksListChanged(tracks)) {
@@ -190,6 +193,9 @@ async function loadSoundcloudTracks() {
 
     if (hasImmediateTracks) {
       console.warn('Keeping previously shown tracks visible after fetch failure.');
+      if (loadingAttempts < MAX_LOADING_ATTEMPTS) {
+        setTimeout(loadSoundcloudTracks, 2000 + (loadingAttempts * 1000));
+      }
       return;
     }
 
@@ -211,6 +217,7 @@ async function tryProxy(proxyBase, rssUrl) {
     
     const response = await fetch(proxyUrl, {
       method: 'GET',
+      cache: 'no-store',
       headers: {
         'Accept': 'application/rss+xml, application/xml, text/xml, */*'
       },
@@ -451,8 +458,8 @@ window.addEventListener('resize', resizePlayers);
 
 // Also try to reload tracks if window regains focus (user came back to tab)
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && mixesContainer.querySelector('.error-card, .loading-card')) {
-    console.log('Page became visible, retrying failed tracks...');
+  if (!document.hidden && Date.now() - (lastSuccessfulFetch || 0) >= CACHE_DURATION) {
+    console.log('Page became visible, refreshing tracks...');
     loadSoundcloudTracks();
   }
 });
